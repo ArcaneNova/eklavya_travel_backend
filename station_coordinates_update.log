@@ -1,0 +1,717 @@
+2025-01-14 21:33:05,651 - INFO - Starting station coordinates update process
+2025-01-14 21:33:05,655 - ERROR - Backup failed: [WinError 2] The system cannot find the file specified
+2025-01-14 21:33:05,655 - ERROR - Backup failed, aborting coordinate update
+2025-01-14 21:33:05,655 - ERROR - Process failed
+2025-01-14 21:33:15,565 - INFO - Starting station coordinates update process
+2025-01-14 21:33:15,569 - ERROR - Backup failed: [WinError 2] The system cannot find the file specified
+2025-01-14 21:33:15,569 - ERROR - Backup failed, aborting coordinate update
+2025-01-14 21:33:15,569 - ERROR - Process failed
+2025-01-14 21:36:22,949 - ERROR - Backup failed: [WinError 2] The system cannot find the file specified
+2025-01-14 21:38:11,116 - INFO - Database backup created in collection: station_coordinates_backup_20250114_213809
+2025-01-14 21:41:46,268 - INFO - Backup created: station_coordinates_backup_20250114_214145
+2025-01-14 21:42:02,919 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:03,110 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:03,169 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Sawai+Madhopur+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:03,262 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Narayanpur+Tatwar+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:03,345 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:03,462 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Gangapur+City+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:03,530 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bayana+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:03,792 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:03,894 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,013 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,076 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,096 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,230 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,296 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,313 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,457 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,497 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,512 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,513 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,645 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,696 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,715 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,715 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:04,769 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,847 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,917 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:04,919 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:05,038 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:05,054 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:42:05,564 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Mathura+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:06,461 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Hindaun+City+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:08,393 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:08,527 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:08,946 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:09,744 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:09,926 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Gangapur+City+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:09,942 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Narayanpur+Tatwar+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:10,046 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=BXN+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:10,063 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Sawai+Madhopur+Junction%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:10,585 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Mathura+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:11,168 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Narayanpur+Tatwar+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:11,487 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Hindaun+City+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:14,951 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Gangapur+City+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:15,057 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=BXN+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:15,088 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Sawai+Madhopur+Junction%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:17,199 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:18,446 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:18,577 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:19,457 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kanpur+Central+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:19,771 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=IDG+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:20,191 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Gangapur+City+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:20,281 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Bayana+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:20,634 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=MTJ+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:21,418 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Unnao+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:21,515 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=HAN+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:22,208 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:23,462 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:23,577 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:24,471 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kanpur+Central+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:24,797 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=IDG+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:25,212 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Gangapur+City+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:25,311 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bayana+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:25,663 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=MTJ+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:26,462 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Unnao+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:26,546 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=HAN+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:27,429 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:30,477 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Gangapur+City+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:30,689 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Gangapur+City+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:31,560 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bayana+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:32,431 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:33,519 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=BTE+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:33,608 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=AGC+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:34,477 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kanpur+Central+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:34,701 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kanpur+Central+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:34,831 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=IDG+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:35,763 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=MTJ+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:36,482 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Unnao+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:36,578 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=HAN+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:36,578 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bayana+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:36,700 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Unnao+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:37,796 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=HAN+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:38,547 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=BTE+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:38,629 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=AGC+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:38,678 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:39,846 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=IDG+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:40,763 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Lucknow+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:40,779 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=MTJ+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:43,134 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=AGC+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:43,709 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:43,776 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=BTE+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:44,402 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=AGC+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:44,723 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=CNB+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:44,827 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bayana+Junction%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:45,793 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Lucknow+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:46,736 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=ON+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:47,339 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=ON+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:47,860 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Hindaun+City+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:48,252 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Hindaun+City+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:48,792 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=BTE+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:49,743 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=CNB+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:49,844 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bayana+Junction%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:49,875 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:50,804 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Mathura+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:52,049 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:54,426 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:54,595 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Mathura+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:54,909 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:55,178 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=CNB+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:55,807 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Lucknow+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:56,186 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Lucknow+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:57,067 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:57,377 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=ON+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:58,140 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bayana+Junction%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:58,307 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Hindaun+City+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:58,340 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Bayana+Junction%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:42:58,823 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:59,236 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Bharatpur+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:42:59,458 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:00,191 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=CNB+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:00,336 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Indargarh+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:02,377 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=ON+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:03,326 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Hindaun+City+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:03,459 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:04,509 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Bharatpur+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:04,653 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Mathura+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:05,374 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:06,228 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=LKO+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:06,435 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=LKO+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:06,467 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kanpur+Central+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:07,622 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Unnao+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:08,422 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Faizabad+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:08,484 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:08,568 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Hindaun+City+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:09,517 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:09,549 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:09,646 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Faizabad+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:09,678 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Mathura+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:10,640 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:11,482 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kanpur+Central+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:12,662 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Unnao+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:13,589 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Hindaun+City+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:13,719 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:14,542 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:14,729 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=LKO+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:15,656 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:15,784 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:16,703 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kanpur+Central+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:18,724 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kota+Junction%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:19,707 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Faizabad+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:19,708 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Mathura+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:19,741 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=LKO+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:19,882 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Hindaun+City+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:20,792 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:21,736 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kanpur+Central+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:22,695 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Unnao+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:22,833 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Agra+Cantt.+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:24,832 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Mathura+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:24,832 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Faizabad+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:24,896 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Hindaun+City+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:25,675 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:31,122 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Indargarh+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:31,274 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Bharatpur+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:31,388 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Akbarpur+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:31,924 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:32,109 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:32,212 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Kanpur+Central+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:32,258 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Shahganj+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:32,330 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:32,552 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:32,884 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Ayodhya+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:32,884 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:32,916 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:33,110 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:33,141 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:33,369 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:33,566 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:33,591 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:33,807 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:33,870 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Mathura+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:34,024 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:34,267 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:34,476 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:34,578 - INFO - Received an HTTP error (429): <html>
+<head>
+<title>Bandwidth limit exceeded</title>
+</head>
+<body>
+<h1>Bandwidth limit exceeded</h1>
+
+<p>You have been temporarily blocked because you have been overusing OSM's geocoding service or because you have not provided sufficient identification of your application. This block will be automatically lifted after a while. Please take the time and adapt your scripts to reduce the number of requests and make sure that you send a valid UserAgent or Referer.</p>
+
+<p>For more information, consult the <a href="https://operations.osmfoundation.org/policies/nominatim/">usage policy</a> for the OSM Nominatim server.</p>
+</body>
+</html>
+
+2025-01-14 21:43:34,911 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Lucknow+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:35,759 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=FD+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:37,554 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=ABP+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:38,569 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=AY+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:40,386 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Lucknow+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:41,221 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=FD+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:43,017 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=ABP+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:44,021 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=AY+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:51,460 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Lucknow+Railway+Station%2C+India+Railway&format=json&limit=1&accept-language=en
+2025-01-14 21:43:52,361 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=FD+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:54,057 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=Akbarpur+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:43:55,162 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=5)")': /search?q=AY+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:45:56,690 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:45:56,939 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:45:57,183 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:02,400 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:02,680 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:02,916 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:08,150 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:08,384 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:08,604 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:15,855 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:16,084 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:16,281 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:21,512 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:21,747 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:21,973 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:27,197 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:27,419 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:27,627 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:34,861 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:35,067 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:35,309 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:40,528 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:40,748 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:40,973 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:46,254 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:46,667 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:46,981 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:46:54,353 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:54,704 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:46:54,941 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:00,215 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:00,715 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:01,350 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:06,579 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:06,782 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:06,993 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:14,206 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:14,414 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:14,623 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:19,849 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:20,088 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:20,298 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=KOTA+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:25,547 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:25,771 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:25,978 - WARNING - Geocoding error for KOTA: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Kota+Junction+Junction%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:33,217 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Indargarh+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:33,420 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Indargarh+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:33,639 - WARNING - Geocoding error for IDG: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Indargarh+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:38,872 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=IDG+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:39,079 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=IDG+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:39,281 - WARNING - Geocoding error for IDG: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=IDG+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:44,513 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Indargarh+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:44,719 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Indargarh+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:44,974 - WARNING - Geocoding error for IDG: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Indargarh+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:47:52,297 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Indargarh+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:52,568 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /search?q=Indargarh+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:47:52,995 - WARNING - Geocoding error for IDG: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Indargarh+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))
+2025-01-14 21:49:08,075 - INFO - Found 67 working proxies
+2025-01-14 21:49:24,074 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)')': /search?q=Ayodhya+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:49:24,549 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)')': /search?q=Ayodhya+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:49:25,122 - WARNING - Error with pattern 'Ayodhya Railway Station Railway Station, India' for AY: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Ayodhya+Railway+Station+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProxyError('Unable to connect to proxy', SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)'))))
+2025-01-14 21:49:30,725 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)')': /search?q=AY+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:49:31,189 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)')': /search?q=AY+Railway+Station%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:49:31,752 - WARNING - Error with pattern 'AY Railway Station, India' for AY: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=AY+Railway+Station%2C+India&format=json&limit=1&accept-language=en (Caused by ProxyError('Unable to connect to proxy', SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)'))))
+2025-01-14 21:49:37,322 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)')': /search?q=Ayodhya+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:49:37,886 - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)')': /search?q=Ayodhya+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en
+2025-01-14 21:49:38,341 - WARNING - Error with pattern 'Ayodhya Railway Station Junction, India' for AY: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Max retries exceeded with url: /search?q=Ayodhya+Railway+Station+Junction%2C+India&format=json&limit=1&accept-language=en (Caused by ProxyError('Unable to connect to proxy', SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1129)'))))

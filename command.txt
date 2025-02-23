@@ -1,0 +1,85 @@
+atm, bus_stop, cinema, college, electronic, government, hospitals, hotel, mosque, park, petrol_pump, police_station, restaurant, school, supermarket, temples tables has below cols
+title	address	state	district	subdistrict	village	latitude	longitude
+
+and villages table has below cols and it has 9 lakh+ rows
+health_centers	latitude	longitude	village_name	state	district	subdistrict	locality	pin_code	parliament_mp	district	tehsil	state	language	assembly_constituency	assembly_mla	lok_sabha	post_office	mandal	elevation	std_code	commodities	city	mul_village_name	division	block	taluka	colleges_near	schools_near	national_highways	rivers	main_village
+
+in above colleges_near	schools_near	national_highways	rivers cols are contains values in json format like below samples-
+
+colleges_near col sample - 
+[{"name": "Vinod Degree College", "address": ""}, {"name": "Govt Jr College Asifabad", "address": "Govt Jr College Asifabad"}, {"name": "Sri Chaitanya Jr College Asifabad", "address": "Sri Chaitanya Jr College Asifabad"}, {"name": "A P S W R Jr College? Asifabad", "address": "A P S W R Jr College? Asifabad"}, {"name": "Sri Chaitanya Degree College", "address": "Rajampet, Asifabad, Adilabad Dist.-504293."}]
+
+schools_near sample - 
+[{"name": "Kgbv Asifabad", "address": "asifabad , asifabad , adilabad , Andhra Pradesh . PIN- 504293 , Post - Asifabad"}, {"name": "Sri Vasavi Vidyamand", "address": "asifabad , asifabad , adilabad , Andhra Pradesh . PIN- 504293 , Post - Asifabad"}, {"name": "Asifabad Model Schoo", "address": "asifabad , asifabad , adilabad , Andhra Pradesh . PIN- 504293 , Post - Asifabad"}, {"name": "Zphs Jankapur", "address": "asifabad , asifabad , adilabad , Andhra Pradesh . PIN- 504293 , Post - Asifabad"}]
+
+national_highways sample data
+[{"highway": "NH63"}, {"highway": "NH363"}]
+
+rivers sample data
+[{"name": "Godavari", "translations": ["à¤—à¥‹à¤¦à¤¾à¤µà¤°à¥€", "à²—à³‹à²¦à²¾à²µà²°à²¿", "à¤—à¥‹à¤¦à¤¾à¤µà¤°à¥€", "à®•à¯‹à®¤à®¾à®µà®°à®¿", "à°—à±‹à°¦à°¾à°µà°°à°¿"]}]
+
+there is table village_census which have below cols
+
+district	subdistrict	village	total_population	female_population	total_literacy	female_literacy	st_population	working_population	gram_panchayat	distance_from_subdistrict	distance_from_district	nearest_town	nearest_town_distance	govt_primary_school	govt_disabled_school	govt_engineering_college	govt_medical_college	govt_polytechnic	govt_secondary_school	govt_senior_secondary	nearest_pre_primary	nearest_polytechnic	nearest_secondary	primary_health_center	community_health_center	family_welfare_center	maternity_child_center	tb_clinic	veterinary_hospital	mobile_health_clinic	medical_shop	treated_tap_water	untreated_water	covered_well	uncovered_well	handpump	drainage_system	garbage_collection	direct_drain_discharge	mobile_coverage	internet_cafe	private_courier	bus_service	railway_station	animal_cart	national_highway	state_highway	district_road	atm	commercial_bank	cooperative_bank	power_supply	anganwadi	birth_death_registration	newspaper	total_area	irrigated_area
+
+
+
+Below posgresql url is given. write go lang backend code for below:
+
+1. first write code for end point which if i send state name then return all the district of the state, then if i send state district then send all subdistrict and if post state, district and subdistrict, return all villages. for giving an selector option at frontend for users.
+2. when user select state, district, subdistrict/block, village then return full village details from villages table and also calculate nearest atm, bus_stop, cinema, college, electronic, government, hospitals, hotel, mosque, park, petrol_pump, police_station, restaurant, school, supermarket, temples and return 10 nearest of all by calculating through village coordinates and these coordinates. also compare district, subdistrict and village to census_village and if it available then also add census data of that village.
+
+remember: in villages table there are also cols like colleges_near	schools_near	national_highways	rivers which contains json data include them also in village details and along with it also include calculated nearby colleges and schools which are in seperate table.
+
+
+also create another api endpoint which takes district, subdistrict and village and return full census data from census_village.
+
+also there another table named trains which has below columns 
+train_number	title	breadcrumb_title	from_station_short	from_station_full	to_station_short	to_station_full	runs_on	type	duration	stops	schedule_table	classes
+
+schedule_table provides full schedule in json format. below is sample of it.
+
+[{"day": 1, "station": "LNL - Lonavala Railway Station", "arrival": "", "halt": "", "departure": "05:20 AM", "distance": "0 KM", "platform": "3"}, {"day": 1, "station": "MVL - Malavli Railway Station", "arrival": "05:27 AM", "halt": "1m", "departure": "05:28 AM", "distance": "7 KM", "platform": "1"}, {"day": 1, "station": "KMST - Kamshet Railway Station", "arrival": "05:34 AM", "halt": "1m", "departure": "05:35 AM", "distance": "15 KM", "platform": "1"}, {"day": 1, "station": "KNHE - Kanhe Railway Station", "arrival": "05:37 AM", "halt": "1m", "departure": "05:38 AM", "distance": "19 KM", "platform": "1"}, {"day": 1, "station": "VDN - Vadgaon Railway Station", "arrival": "05:41 AM", "halt": "1m", "departure": "05:42 AM", "distance": "24 KM", "platform": "1"}, {"day": 1, "station": "TGN - Talegaon Railway Station", "arrival": "05:46 AM", "halt": "1m", "departure": "05:47 AM", "distance": "27 KM", "platform": "1"}, {"day": 1, "station": "GRWD - Ghorawadi Railway Station", "arrival": "05:50 AM", "halt": "1m", "departure": "05:51 AM", "distance": "30 KM", "platform": "1"}, {"day": 1, "station": "DEHR - Dehu Road Railway Station", "arrival": "05:57 AM", "halt": "1m", "departure": "05:58 AM", "distance": "35 KM", "platform": "2"}, {"day": 1, "station": "AKRD - Akurdi Railway Station", "arrival": "06:02 AM", "halt": "1m", "departure": "06:03 AM", "distance": "39 KM", "platform": "1"}, {"day": 1, "station": "CCH - Chinchvad Railway Station", "arrival": "06:06 AM", "halt": "1m", "departure": "06:07 AM", "distance": "42 KM", "platform": "2"}, {"day": 1, "station": "PMP - Pimpri Railway Station", "arrival": "06:10 AM", "halt": "1m", "departure": "06:11 AM", "distance": "43 KM", "platform": "1"}, {"day": 1, "station": "DAPD - Dapodi Railway Station", "arrival": "06:17 AM", "halt": "1m", "departure": "06:18 AM", "distance": "48 KM", "platform": "1"}, {"day": 1, "station": "KK - Khadki Railway Station", "arrival": "06:21 AM", "halt": "1m", "departure": "06:22 AM", "distance": "50 KM", "platform": "1"}, {"day": 1, "station": "SVJR - Shivajinagar Railway Station", "arrival": "06:26 AM", "halt": "1m", "departure": "06:27 AM", "distance": "52 KM", "platform": "1"}, {"day": 1, "station": "PUNE - Pune Junction", "arrival": "06:40 AM", "halt": "", "departure": "", "distance": "54 KM", "platform": "1"}]
+
+
+for above create a api for trains route details when post train no then full details of trains should be return.
+
+like schedule_table col has json data from which stations trains will go. now create an api where user will give a station name and it will return all the trains details like train no, name, arrival, departure, starting station, end station, durations, stops, distance, service days. for this you have to take station names from schedule_table json data from all cols to list the trains.
+
+also create another api endpoint where user will give two stations and have to return all trains details like train no, name, arrival, departure, starting station, end station, durations, stops, distance, service days,etc. who are running between these two points. 
+
+
+
+now, also there is a table named mandals which have below cols.
+latitude	longitude	Language	Elevation / Altitude:	Telephone Code / Std Code	Vehicle Registration Number	RTO Office :	Assembly constituency	Assembly MLA	Lok Sabha constituency  :	Parliament  MP  :	Alternate Mandal  Name	Alternate City  Name	Alternate Tehsil  Name	Alternate Block  Name	Alternate Taluk  Name	Alternate Taluka  Name	administrative_type	headquarters	region	nearby_cities	villages_count	panchayats_count	elevation	languages	political_parties	assembly_constituency	current_mla	mla_party	parliament_constituency	pincodes	colleges	smallest_village	biggest_village	population_total	population_males	population_females	houses_count	rivers	tourist_places	companies	district	subdistrict
+
+above pincodes	colleges rivers	tourist_places	companies contains json data. 
+
+for above create api which takes district and subdistricts and return all the details about the subditrict.
+
+also create another api to show the distance between two subdistricts and calculate estimate travel time via bus, train, and plat to both. calculate estimated these through their coordinates. also calculate other informations which can be possible to show users effectively. and also include important details of both places.
+
+
+now, there is another table named bus_routes which have below cols.
+city	route_name	starting_stage	ending_stage	distance	route
+
+here route col contains json value. below is the sample.
+[{"stop_name": "Jayanagar 4th Block", "lat": 12.928448677062988, "lng": 77.58428192138672}, {"stop_name": "Jayanagar 3rd Block", "lat": 12.93167495727539, "lng": 77.58384704589844}, {"stop_name": "Madhavan Park", "lat": 12.93666934967041, "lng": 77.58397674560547}, {"stop_name": "South End Circle", "lat": 12.936777114868164, "lng": 77.58006286621094}, {"stop_name": "Shanthi Talkies", "lat": 12.936880111694336, "lng": 77.57535552978516}, {"stop_name": "Nagasandra Circle", "lat": 12.93697738647461, "lng": 77.57180786132812}, {"stop_name": "Nettakalappa Circle", "lat": 12.939872741699219, "lng": 77.57276153564453}, {"stop_name": "Basavanagudi Police Station", "lat": 12.941580772399902, "lng": 77.57384490966797}, {"stop_name": "National College Basavanagudi", "lat": 12.948160171508789, "lng": 77.57366943359375}, {"stop_name": "Gandhi Bazaar", "lat": 12.948171615600586, "lng": 77.57011413574219}, {"stop_name": "Ramakrishna Ashram", "lat": 12.948363304138184, "lng": 77.56773376464844}, {"stop_name": "Bangalore High School", "lat": 12.951687812805176, "lng": 77.56756591796875}, {"stop_name": "Chamarajpet/Uma Talkies", "lat": 12.95712661743164, "lng": 77.56743621826172}, {"stop_name": "Kims Hospital/Makkalakoota", "lat": 12.957311630249023, "lng": 77.57359313964844}, {"stop_name": "K R Market", "lat": 12.964130401611328, "lng": 77.57776641845703}, {"stop_name": "Town Hall", "lat": 12.963615417480469, "lng": 77.58503723144531}, {"stop_name": "Corporation", "lat": 12.967632293701172, "lng": 77.58763885498047}, {"stop_name": "Kaveri Bhavan", "lat": 12.973246574401855, "lng": 77.58122253417969}, {"stop_name": "K R Circle", "lat": 12.97632122039795, "lng": 77.5865707397461}, {"stop_name": "Maharani S College", "lat": 12.978860855102539, "lng": 77.58477020263672}, {"stop_name": "VidhanaSoudha", "lat": 12.980975151062012, "lng": 77.5885238647461}, {"stop_name": "Telephone Exchange (Vidhana Soudha)", "lat": 12.981683731079102, "lng": 77.58686828613281}, {"stop_name": "Basaveshwara Circle/R C College", "lat": 12.984078407287598, "lng": 77.58719635009766}, {"stop_name": "Race Course Road", "lat": 12.984297752380371, "lng": 77.58243560791016}, {"stop_name": "Sivananda Stores", "lat": 12.986695289611816, "lng": 77.57933807373047}, {"stop_name": "Swastik", "lat": 12.988815307617188, "lng": 77.57521057128906}, {"stop_name": "Central Talkies Bus Stop", "lat": 12.989073753356934, "lng": 77.5742416381836}, {"stop_name": "Sheshadripuram", "lat": 12.99119758605957, "lng": 77.57494354248047}, {"stop_name": "Malleswaram Circle", "lat": 12.996891975402832, "lng": 77.56941986083984}, {"stop_name": "Malleswaram 8th Cross", "lat": 12.99920654296875, "lng": 77.56935119628906}, {"stop_name": "Malleswaram 11th Cross", "lat": 13.00203800201416, "lng": 77.57129669189453}, {"stop_name": "Malleswaram 18th Cross", "lat": 13.008687019348145, "lng": 77.5711441040039}, {"stop_name": "Tata Institute (Iisc)", "lat": 13.014289855957031, "lng": 77.56543731689453}, {"stop_name": "Yeshwanthpur", "lat": 13.0178861618042, "lng": 77.55667877197266}]
+
+for above, create api when user post city and route name then it returns all details like city, route name, starting stage, ending stage, distance, route. 
+
+there are multiple cities like delhi, Bengaluru, Hyderabad, Mumbai, Chennai, etc. in above csv. also as you can see route col has json which contains multiples stops and their coordinates. create api for if select and post two stops from same city then it should return full route for the bus. indicate if direct is there or not if there is no direct route then calculate interchange routes and return them shortest route.
+
+
+write best performance code with go lang. and add all features which help to integrate with client side. give me full code.
+
+
+write full backend in go lang for best performance. because dataset is too much large.
+
+var dbParams = map[string]string{
+	"dbname":   "indiavillage",
+	"user":     "postgres",
+	"password": "1234",
+	"host":     "localhost",
+	"port":     "5432",
+}
