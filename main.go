@@ -190,7 +190,7 @@ func main() {
     log.Println("Routes registered successfully")
 
     // Health check endpoint
-    api.HandleFunc("/api/v1/health/detailed", healthCheck).Methods("GET")
+    api.HandleFunc("/health/detailed", healthCheck).Methods("GET")
 
     // Create server with timeouts
     srv := &http.Server{
