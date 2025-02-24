@@ -2,6 +2,7 @@ package main
 
 import (
     "context"
+    "encoding/json"
     "fmt"
     "log"
     "net/http"
@@ -17,6 +18,18 @@ import (
     "village_site/config"
     "village_site/handlers"
 )
+
+type HealthResponse struct {
+    Status    string `json:"status"`
+    DBStatus  string `json:"db_status"`
+    DBDetails struct {
+        Host     string `json:"host"`
+        Port     string `json:"port"`
+        Database string `json:"database"`
+        Tables   []string `json:"tables,omitempty"`
+    } `json:"db_details"`
+    Error     string `json:"error,omitempty"`
+}
 
 func initMongoDB() error {
     // Get MongoDB URI from environment variable
@@ -48,6 +61,55 @@ func initMongoDB() error {
     config.MongoDB = client.Database("train_database")
 
     return nil
+}
+
+func healthCheck(w http.ResponseWriter, r *http.Request) {
+    response := HealthResponse{
+        Status: "ok",
+    }
+
+    // Check database connection
+    if config.DB == nil {
+        response.Status = "error"
+        response.DBStatus = "not_initialized"
+        response.Error = "Database connection not initialized"
+    } else {
+        // Try to ping the database
+        err := config.DB.Ping()
+        if err != nil {
+            response.Status = "error"
+            response.DBStatus = "connection_error"
+            response.Error = fmt.Sprintf("Database ping failed: %v", err)
+        } else {
+            response.DBStatus = "connected"
+            
+            // Get database details
+            response.DBDetails.Host = os.Getenv("DB_HOST")
+            response.DBDetails.Port = os.Getenv("DB_PORT")
+            response.DBDetails.Database = os.Getenv("DB_NAME")
+
+            // Check for required tables
+            tables := []string{"ifsc_details", "micr_details", "bank_details"}
+            var existingTables []string
+
+            for _, table := range tables {
+                var exists bool
+                err := config.DB.QueryRow(`
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_name = $1
+                    )`, table).Scan(&exists)
+                
+                if err == nil && exists {
+                    existingTables = append(existingTables, table)
+                }
+            }
+            response.DBDetails.Tables = existingTables
+        }
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
 }
 
 func main() {
@@ -126,6 +188,9 @@ func main() {
     api := r.PathPrefix("/api/v1").Subrouter()
     registerRoutes(api)
     log.Println("Routes registered successfully")
+
+    // Health check endpoint
+    api.HandleFunc("/api/v1/health/detailed", healthCheck).Methods("GET")
 
     // Create server with timeouts
     srv := &http.Server{

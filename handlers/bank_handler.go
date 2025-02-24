@@ -77,6 +77,40 @@ type PostOfficeResponse struct {
 // Get list of banks
 func GetBankList(w http.ResponseWriter, r *http.Request) {
     log.Printf("GetBankList: Starting to fetch bank list")
+
+    // Check if DB is nil
+    if config.DB == nil {
+        log.Printf("GetBankList: Database connection is nil")
+        http.Error(w, "Database connection not initialized", http.StatusInternalServerError)
+        return
+    }
+
+    // Check DB connection
+    if err := config.DB.Ping(); err != nil {
+        log.Printf("GetBankList: Database ping failed: %v", err)
+        http.Error(w, "Database connection error", http.StatusInternalServerError)
+        return
+    }
+
+    // Check if table exists
+    var tableExists bool
+    err := config.DB.QueryRow(`
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_name = 'ifsc_details'
+        )`).Scan(&tableExists)
+    
+    if err != nil {
+        log.Printf("GetBankList: Error checking table existence: %v", err)
+        http.Error(w, "Error checking database structure", http.StatusInternalServerError)
+        return
+    }
+
+    if !tableExists {
+        log.Printf("GetBankList: ifsc_details table does not exist")
+        http.Error(w, "Required table not found", http.StatusInternalServerError)
+        return
+    }
     
     query := `
         SELECT DISTINCT bank 
