@@ -107,6 +107,8 @@ func InitDB() error {
         "password": os.Getenv("DB_PASSWORD"),
         "host":     os.Getenv("DB_HOST"),
         "port":     os.Getenv("DB_PORT"),
+        "sslmode":  os.Getenv("DB_SSL_MODE"),
+        "sslcert": os.Getenv("DB_SSL_CA"),
     }
 
     // Use default values if environment variables are not set
@@ -125,9 +127,20 @@ func InitDB() error {
     if dbParams["port"] == "" {
         dbParams["port"] = "5432"
     }
+    if dbParams["sslmode"] == "" {
+        dbParams["sslmode"] = "disable"
+    }
 
-    psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+    psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
         dbParams["host"], dbParams["port"], dbParams["user"], dbParams["password"], dbParams["dbname"])
+    
+    // Add SSL parameters if SSL mode is set
+    if dbParams["sslmode"] != "disable" {
+        psqlInfo += fmt.Sprintf(" sslmode=%s sslrootcert=%s",
+            dbParams["sslmode"], dbParams["sslcert"])
+    } else {
+        psqlInfo += " sslmode=disable"
+    }
 
     var err error
     DB, err = sql.Open("postgres", psqlInfo)

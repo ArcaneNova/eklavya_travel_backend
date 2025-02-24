@@ -1,23 +1,4 @@
 services:
-  # Database service
-  - type: pserv
-    name: village-db
-    env: docker
-    plan: starter
-    region: singapore
-    disk:
-      name: data
-      mountPath: /var/lib/postgresql/data
-      sizeGB: 10
-    image: postgres:14-alpine
-    envVars:
-      - key: POSTGRES_DB
-        value: indiavillage
-      - key: POSTGRES_USER
-        sync: false
-      - key: POSTGRES_PASSWORD
-        sync: false
-
   # Web service
   - type: web
     name: village-backend
@@ -37,27 +18,26 @@ services:
       - key: PORT
         value: 8080
       - key: DB_HOST
-        fromService:
-          type: pserv
-          name: village-db
-          property: host
+        value: villagesite-arshadnoor585-d5bb.i.aivencloud.com
       - key: DB_PORT
-        value: 5432
+        value: 17865
       - key: DB_USER
-        fromService:
-          type: pserv
-          name: village-db
-          envVarKey: POSTGRES_USER
+        value: avnadmin
       - key: DB_PASSWORD
-        fromService:
-          type: pserv
-          name: village-db
-          envVarKey: POSTGRES_PASSWORD
+        sync: false
       - key: DB_NAME
-        value: indiavillage
+        value: defaultdb
+      - key: DB_SSL_MODE
+        value: verify-full
+      - key: DB_SSL_CA
+        value: /etc/ssl/certs/ca.crt
       - key: MONGO_USERNAME
         sync: false
       - key: MONGO_PASSWORD
         sync: false
       - key: MONGO_URI
-        sync: false 
+        sync: false
+    disk:
+      name: ssl-certs
+      mountPath: /etc/ssl/certs
+      sizeGB: 1 
