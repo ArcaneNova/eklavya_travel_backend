@@ -29,8 +29,8 @@ const (
     retryDelay = 5 * time.Second
 )
 
-// loadEnv loads environment variables from .env file
-func loadEnv() error {
+// LoadEnv loads environment variables from .env file
+func LoadEnv() error {
     // Try multiple possible locations for .env file
     possiblePaths := []string{
         ".env",                    // Current directory
@@ -48,6 +48,7 @@ func loadEnv() error {
         }
         if _, err := os.Stat(path); err == nil {
             loadedFile = path
+            log.Printf("Found .env file at: %s", path)
             break
         }
     }
@@ -82,7 +83,16 @@ func loadEnv() error {
         // Remove quotes if present
         value = strings.Trim(value, `"'`)
         os.Setenv(key, value)
+        if !strings.Contains(strings.ToLower(key), "password") && !strings.Contains(strings.ToLower(key), "secret") {
+            log.Printf("Set environment variable: %s", key)
+        }
     }
+
+    // Verify some key environment variables were loaded
+    if os.Getenv("DB_HOST") != "" {
+        log.Printf("Successfully loaded database configuration")
+    }
+    
     return scanner.Err()
 }
 
@@ -107,8 +117,13 @@ func InitDB() error {
         "password": os.Getenv("DB_PASSWORD"),
         "host":     os.Getenv("DB_HOST"),
         "port":     os.Getenv("DB_PORT"),
-        "sslmode":  os.Getenv("DB_SSL_MODE"),
     }
+
+    // Log current environment variables (excluding sensitive data)
+    log.Printf("DB Host: %s", dbParams["host"])
+    log.Printf("DB Port: %s", dbParams["port"])
+    log.Printf("DB Name: %s", dbParams["dbname"])
+    log.Printf("DB User: %s", dbParams["user"])
 
     // Use default values if environment variables are not set
     if dbParams["dbname"] == "" {
@@ -126,17 +141,27 @@ func InitDB() error {
     if dbParams["port"] == "" {
         dbParams["port"] = "5432"
     }
-    if dbParams["sslmode"] == "" {
-        dbParams["sslmode"] = "require"  // Changed to require instead of verify-full
+
+    // Check if we're connecting to Aiven (based on hostname)
+    isAiven := strings.Contains(dbParams["host"], "aivencloud.com")
+
+    var connStr string
+    if isAiven {
+        // Always use SSL for Aiven connections
+        connStr = fmt.Sprintf(
+            "host=%s port=%s user=%s password=%s dbname=%s sslmode=require",
+            dbParams["host"], dbParams["port"], dbParams["user"], 
+            dbParams["password"], dbParams["dbname"])
+        log.Printf("Connecting to Aiven PostgreSQL with SSL enabled")
+    } else {
+        // Local development without SSL
+        connStr = fmt.Sprintf(
+            "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+            dbParams["host"], dbParams["port"], dbParams["user"], 
+            dbParams["password"], dbParams["dbname"])
+        log.Printf("Connecting to local PostgreSQL without SSL")
     }
 
-    // Build connection string
-    connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-        dbParams["host"], dbParams["port"], dbParams["user"], 
-        dbParams["password"], dbParams["dbname"], dbParams["sslmode"])
-
-    log.Printf("Attempting to connect to PostgreSQL with SSL mode: %s", dbParams["sslmode"])
-    
     var err error
     DB, err = sql.Open("postgres", connStr)
     if err != nil {
@@ -163,7 +188,7 @@ func InitDB() error {
 // ConnectWithRetry attempts to connect to MongoDB with retries
 func ConnectWithRetry(maxRetries int) error {
     // Load environment variables from .env file
-    if err := loadEnv(); err != nil {
+    if err := LoadEnv(); err != nil {
         log.Printf("Warning: Could not load .env file: %v", err)
     }
 

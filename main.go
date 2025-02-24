@@ -54,6 +54,11 @@ func main() {
     startTime := time.Now()
     log.Printf("Starting server initialization at %s", startTime.Format(time.RFC3339))
 
+    // Load environment variables first
+    if err := config.LoadEnv(); err != nil {
+        log.Printf("Warning: Error loading .env file: %v", err)
+    }
+
     // Load environment variables
     port := os.Getenv("PORT")
     if port == "" {

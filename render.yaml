@@ -9,6 +9,8 @@ services:
     startCommand: ./app
     healthCheckPath: /api/v1/health
     envVars:
+      - key: GO_ENV
+        value: production
       - key: PORT
         value: 8080
       - key: DB_HOST
