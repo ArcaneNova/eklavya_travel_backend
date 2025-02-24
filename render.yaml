@@ -31,7 +31,29 @@ services:
         sync: false
       - key: MONGO_URI
         sync: false
+      # Memory optimization settings
+      - key: GOMAXPROCS
+        value: "1"
+      - key: GOGC
+        value: "50"
+      - key: BATCH_SIZE
+        value: "100"
     disk:
       name: ssl-certs
       mountPath: /etc/ssl/certs
-      sizeGB: 1 
+      sizeGB: 1
+    autoscaling:
+      min: 1
+      max: 1
+    scaling:
+      minInstances: 1
+      maxInstances: 1
+      targetMemoryPercent: 80
+      targetCPUPercent: 80
+    resources:
+      limits:
+        memory: 1024Mi
+        cpu: 1000m
+      requests:
+        memory: 512Mi
+        cpu: 500m 
