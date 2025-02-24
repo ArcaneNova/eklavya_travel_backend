@@ -217,3 +217,14 @@ func getStationFacilities(stationCode string) []string {
         "Wheelchair Access",
     }
 }
+
+// Helper function for sending error responses
+func sendErrorResponse(w http.ResponseWriter, message string, statusCode int) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(statusCode)
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "error": message,
+        "status": statusCode,
+        "timestamp": time.Now().Format(time.RFC3339),
+    })
+}

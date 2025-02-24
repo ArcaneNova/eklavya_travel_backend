@@ -5,15 +5,10 @@ import (
     "encoding/json"
     "fmt"
     "log"
-    "math"
     "net/http"
-    "sort"
-    "strings"
     "sync"
     "time"
     "runtime"
-    "crypto/rand"
-    "encoding/hex"
     "strconv"
     "village_site/config"
     "village_site/models"
@@ -147,7 +142,7 @@ func addRouteEdge(from, to string, train *models.Train) {
 
     route := RouteInfo{
         TrainNumber: fmt.Sprintf("%d", train.TrainNumber),
-        TrainName:   train.Title,
+        TrainName:   train.Name,
         TrainType:   train.Type,
     }
 
