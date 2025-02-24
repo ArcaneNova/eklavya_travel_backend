@@ -523,13 +523,14 @@ func FindBusRoute(w http.ResponseWriter, r *http.Request) {
 
     var response BusRouteResponse
 
-    // Step 1: Try direct routes
+    // Step 1: Try direct routes first
     directRoutes, err := findDirectBusRoutes(ctx, req.City, req.FromStop, req.ToStop)
     if err != nil {
         log.Printf("Error finding direct routes: %v", err)
     }
 
     if len(directRoutes) > 0 {
+        // If we have direct routes, only use those
         processDirectRoutes(&response, directRoutes)
     } else {
         // Step 2: Try single interchange routes
@@ -539,16 +540,22 @@ func FindBusRoute(w http.ResponseWriter, r *http.Request) {
         }
 
         if len(singleInterchanges) > 0 {
-            processSingleInterchangeRoutes(&response, singleInterchanges)
+            // Filter single interchange routes by total distance
+            filteredInterchanges := filterBestInterchangeRoutes(singleInterchanges)
+            processSingleInterchangeRoutes(&response, filteredInterchanges)
         } else {
-            // Step 3: Try multiple interchange routes
+            // Step 3: Only try multiple interchanges if no better options exist
             multiInterchanges, err := findMultipleInterchangeRoutes(ctx, req.City, req.FromStop, req.ToStop)
             if err != nil {
                 log.Printf("Error finding multiple interchange routes: %v", err)
             }
 
             if len(multiInterchanges) > 0 {
-                processMultipleInterchangeRoutes(&response, multiInterchanges)
+                // Filter multiple interchange routes to only show if they're reasonable
+                filteredMultiInterchanges := filterBestMultiInterchangeRoutes(multiInterchanges)
+                if len(filteredMultiInterchanges) > 0 {
+                    processMultipleInterchangeRoutes(&response, filteredMultiInterchanges)
+                }
             }
         }
     }
@@ -563,6 +570,93 @@ func FindBusRoute(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(response)
+}
+
+func filterBestInterchangeRoutes(routes []InterchangeRoute) []InterchangeRoute {
+    if len(routes) == 0 {
+        return routes
+    }
+
+    // Sort by total distance first
+    sort.Slice(routes, func(i, j int) bool {
+        distI := parseDistance(routes[i].TotalDistance)
+        distJ := parseDistance(routes[j].TotalDistance)
+        return distI < distJ
+    })
+
+    // Get the shortest distance
+    shortestDist := parseDistance(routes[0].TotalDistance)
+    
+    // Only keep routes that are at most 30% longer than the shortest route
+    var filtered []InterchangeRoute
+    for _, route := range routes {
+        dist := parseDistance(route.TotalDistance)
+        if dist <= shortestDist*1.3 { // Allow up to 30% longer
+            filtered = append(filtered, route)
+        }
+    }
+
+    // Sort final results by multiple criteria
+    sort.Slice(filtered, func(i, j int) bool {
+        distI := parseDistance(filtered[i].TotalDistance)
+        distJ := parseDistance(filtered[j].TotalDistance)
+        if math.Abs(distI - distJ) > 0.1 { // If distances differ by more than 100m
+            return distI < distJ
+        }
+        // If distances are very close, prefer fewer stops
+        return filtered[i].TotalStops < filtered[j].TotalStops
+    })
+
+    // Return at most 3 best routes
+    if len(filtered) > 3 {
+        filtered = filtered[:3]
+    }
+    return filtered
+}
+
+func filterBestMultiInterchangeRoutes(routes []MultiInterchangeRoute) []MultiInterchangeRoute {
+    if len(routes) == 0 {
+        return routes
+    }
+
+    // Sort by total distance first
+    sort.Slice(routes, func(i, j int) bool {
+        distI := parseDistance(routes[i].TotalDistance)
+        distJ := parseDistance(routes[j].TotalDistance)
+        return distI < distJ
+    })
+
+    // Get the shortest distance
+    shortestDist := parseDistance(routes[0].TotalDistance)
+    
+    // Only keep routes that are at most 40% longer than the shortest route
+    // and have reasonable number of interchanges
+    var filtered []MultiInterchangeRoute
+    for _, route := range routes {
+        dist := parseDistance(route.TotalDistance)
+        if dist <= shortestDist*1.4 && route.InterchangeCount <= 2 {
+            filtered = append(filtered, route)
+        }
+    }
+
+    // Sort final results by multiple criteria
+    sort.Slice(filtered, func(i, j int) bool {
+        distI := parseDistance(filtered[i].TotalDistance)
+        distJ := parseDistance(filtered[j].TotalDistance)
+        if math.Abs(distI - distJ) > 0.1 {
+            return distI < distJ
+        }
+        if filtered[i].InterchangeCount != filtered[j].InterchangeCount {
+            return filtered[i].InterchangeCount < filtered[j].InterchangeCount
+        }
+        return filtered[i].TotalStops < filtered[j].TotalStops
+    })
+
+    // Return at most 2 best routes
+    if len(filtered) > 2 {
+        filtered = filtered[:2]
+    }
+    return filtered
 }
 
 // Route finding functions

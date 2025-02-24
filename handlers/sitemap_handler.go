@@ -49,7 +49,7 @@ type SitemapURL struct {
 
 const (
 	maxURLsPerSitemap = 10000
-	baseURL = "https://village2025.com"
+	baseURL = "https://eklavyatravel.com"
 	XMLHeader = `<?xml version="1.0" encoding="UTF-8"?>`
 	sitemapCacheDuration = 24 * time.Hour // Cache sitemaps for 24 hours
 )
@@ -348,22 +348,39 @@ func GetTrainRoutesSitemap(w http.ResponseWriter, r *http.Request) {
 	collection := config.MongoDB.Collection("trains")
 	ctx := r.Context()
 
-	// More efficient aggregation pipeline
+	// First get total count
+	total, err := collection.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		http.Error(w, "Error counting trains: " + err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Calculate max pages
+	maxPages := (int(total) + limit - 1) / limit
+	if page > maxPages {
+		http.Error(w, "Page number exceeds maximum pages", http.StatusBadRequest)
+		return
+	}
+
+	// Optimized aggregation pipeline
 	pipeline := []bson.M{
-		bson.M{
+		{
+			"$skip": offset,
+		},
+		{
+			"$limit": limit,
+		},
+		{
 			"$project": bson.M{
 				"train_number": 1,
-				"title": 1,
-				"schedule_table": bson.M{
-					"$slice": []interface{}{"$schedule_table", offset, limit},
-				},
+				"schedule_table": 1,
 			},
 		},
 	}
 
 	cursor, err := collection.Aggregate(ctx, pipeline)
 	if err != nil {
-		http.Error(w, "Error fetching trains", http.StatusInternalServerError)
+		http.Error(w, "Error fetching trains: " + err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer cursor.Close(ctx)
@@ -377,11 +394,9 @@ func GetTrainRoutesSitemap(w http.ResponseWriter, r *http.Request) {
 	// Process each train
 	for cursor.Next(ctx) {
 		var train struct {
-			TrainNumber int    `bson:"train_number"`
-			Title      string  `bson:"title"`
-			Schedule   []struct {
-				Station   string `bson:"station"`
-				Day      int    `bson:"day"`
+			TrainNumber   int    `bson:"train_number"`
+			ScheduleTable []struct {
+				Station string `bson:"station"`
 			} `bson:"schedule_table"`
 		}
 		
@@ -399,7 +414,7 @@ func GetTrainRoutesSitemap(w http.ResponseWriter, r *http.Request) {
 
 		// Process each station in schedule
 		processedStations := make(map[string]bool)
-		for _, stop := range train.Schedule {
+		for _, stop := range train.ScheduleTable {
 			station := cleanStationCode(stop.Station)
 			if station == "" || processedStations[station] {
 				continue
@@ -424,7 +439,16 @@ func GetTrainRoutesSitemap(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Update the writeXMLResponse call to include section and page
+	if err = cursor.Err(); err != nil {
+		http.Error(w, "Error processing trains: " + err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Set pagination headers
+	w.Header().Set("X-Total-Pages", strconv.Itoa(maxPages))
+	w.Header().Set("X-Current-Page", strconv.Itoa(page))
+
+	// Write response with caching
 	writeXMLResponse(w, urlSet.URLs, "train-routes", page)
 }
 
@@ -446,11 +470,12 @@ func getPaginationParams(r *http.Request) (page, limit int) {
 	return page, limit
 }
 
-// writeXMLResponse modified to support caching
+// writeXMLResponse modified to support caching and compression
 func writeXMLResponse(w http.ResponseWriter, urls []URL, section string, page int) {
 	// Check if sitemap exists in cache
 	if content, exists := getCachedSitemap(section, page); exists {
-		w.Header().Set("Content-Type", "application/xml")
+		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		w.Header().Set("Content-Encoding", "gzip")
 		w.Header().Set("X-Cache", "HIT")
 		w.Write(content)
 		return
@@ -464,20 +489,33 @@ func writeXMLResponse(w http.ResponseWriter, urls []URL, section string, page in
 
 	output, err := xml.MarshalIndent(urlSet, "", "  ")
 	if err != nil {
-		http.Error(w, "Error generating sitemap", http.StatusInternalServerError)
+		http.Error(w, "Error generating sitemap: " + err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// Add XML header
 	content := []byte(xml.Header + string(output))
 
-	// Cache the sitemap
-	cacheSitemap(section, page, content)
+	// Compress the content
+	var buf bytes.Buffer
+	gz := gzip.NewWriter(&buf)
+	if _, err := gz.Write(content); err != nil {
+		http.Error(w, "Error compressing sitemap: " + err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := gz.Close(); err != nil {
+		http.Error(w, "Error finalizing compression: " + err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Cache the compressed sitemap
+	cacheSitemap(section, page, buf.Bytes())
 
 	// Set response headers
-	w.Header().Set("Content-Type", "application/xml")
+	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+	w.Header().Set("Content-Encoding", "gzip")
 	w.Header().Set("X-Cache", "MISS")
-	w.Write(content)
+	w.Write(buf.Bytes())
 }
 
 // GetBanksSitemap generates sitemap for banks
@@ -886,7 +924,6 @@ func GetPincodesSitemap(w http.ResponseWriter, r *http.Request) {
 // GetDistancesSitemap generates sitemap for distance calculator pages
 func GetDistancesSitemap(w http.ResponseWriter, r *http.Request) {
 	page, limit := getPaginationParams(r)
-	offset := (page - 1) * limit  // Calculate offset from page and limit
 	
 	// Check cache first
 	if cached, ok := getCachedSitemap("distances", page); ok {
@@ -899,36 +936,53 @@ func GetDistancesSitemap(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// More efficient query that processes locations in batches
+	// First get total count to validate pagination
+	var total int
+	err := config.DB.QueryRow(`
+		SELECT COUNT(DISTINCT subdistrict) 
+		FROM villages 
+		WHERE subdistrict != ''`).Scan(&total)
+	if err != nil {
+		http.Error(w, "Error counting locations: " + err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Calculate max pages
+	maxPages := (total + limit - 1) / limit
+	if page > maxPages {
+		http.Error(w, "Page number exceeds maximum pages", http.StatusBadRequest)
+		return
+	}
+
+	// Query to get combinations of locations for distance pages
 	query := `
 		WITH locations AS (
-			SELECT DISTINCT 
-				state_name,
-				district_name,
-				subdistrict_name,
-				ROW_NUMBER() OVER (ORDER BY state_name, district_name, subdistrict_name) as rn
+			SELECT DISTINCT state, district, subdistrict
 			FROM villages
-			WHERE subdistrict_name != ''
+			WHERE subdistrict != ''
+			ORDER BY state, district, subdistrict
+			OFFSET $1 LIMIT $2
 		)
 		SELECT 
-			l1.state_name as from_state,
-			l1.district_name as from_district,
-			l1.subdistrict_name as from_subdistrict,
-			l2.state_name as to_state,
-			l2.district_name as to_district,
-			l2.subdistrict_name as to_subdistrict
+			l1.state as from_state,
+			l1.district as from_district,
+			l1.subdistrict as from_subdistrict,
+			l2.state as to_state,
+			l2.district as to_district,
+			l2.subdistrict as to_subdistrict
 		FROM locations l1
-		JOIN locations l2 ON l1.state_name = l2.state_name  -- Only combine within same state
-			AND (l1.district_name != l2.district_name 
-				OR (l1.district_name = l2.district_name AND l1.subdistrict_name < l2.subdistrict_name))
-		WHERE l1.rn > $1 AND l1.rn <= $2
-		ORDER BY l1.state_name, l1.district_name, l1.subdistrict_name,
-				 l2.state_name, l2.district_name, l2.subdistrict_name
-		LIMIT $3`
+		CROSS JOIN locations l2
+		WHERE l1.state = l2.state
+		AND (l1.district < l2.district 
+			OR (l1.district = l2.district 
+				AND l1.subdistrict < l2.subdistrict))
+		ORDER BY 
+			l1.state, l1.district, l1.subdistrict,
+			l2.state, l2.district, l2.subdistrict`
 
-	rows, err := config.DB.Query(query, offset, offset+limit, limit)
+	rows, err := config.DB.Query(query, (page-1)*limit, limit)
 	if err != nil {
-		http.Error(w, "Error fetching distances", http.StatusInternalServerError)
+		http.Error(w, "Error fetching distances: " + err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
@@ -950,6 +1004,11 @@ func GetDistancesSitemap(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
+		// Skip empty values
+		if fromSubdistrict == "" || toSubdistrict == "" {
+			continue
+		}
+
 		// Clean and encode location names
 		fromState = url.PathEscape(cleanName(fromState))
 		fromDistrict = url.PathEscape(cleanName(fromDistrict))
@@ -960,21 +1019,20 @@ func GetDistancesSitemap(w http.ResponseWriter, r *http.Request) {
 
 		// Main distance page
 		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/distance/%s/%s/%s/to/%s/%s/%s",
-				baseURL, fromState, fromDistrict, fromSubdistrict,
-				toState, toDistrict, toSubdistrict),
+			Loc: fmt.Sprintf("%s/distance-between/%s/%s/%s/%s",
+				baseURL, fromDistrict, fromSubdistrict, toDistrict, toSubdistrict),
 			LastMod:    now,
 			ChangeFreq: "weekly",
 			Priority:   0.7,
 		})
 
 		// Add district-level pages if not already processed
-		districtKey := fromState + "/" + fromDistrict + "-" + toState + "/" + toDistrict
+		districtKey := fromDistrict + "-" + toDistrict
 		if !processedDistricts[districtKey] {
 			processedDistricts[districtKey] = true
 			urlSet.URLs = append(urlSet.URLs, URL{
-				Loc: fmt.Sprintf("%s/distances/%s/%s/to/%s/%s",
-					baseURL, fromState, fromDistrict, toState, toDistrict),
+				Loc: fmt.Sprintf("%s/distance-between/%s/to/%s",
+					baseURL, fromDistrict, toDistrict),
 				LastMod:    now,
 				ChangeFreq: "weekly",
 				Priority:   0.6,
@@ -982,7 +1040,11 @@ func GetDistancesSitemap(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Update the writeXMLResponse call to include section and page
+	// Set pagination headers
+	w.Header().Set("X-Total-Pages", strconv.Itoa(maxPages))
+	w.Header().Set("X-Current-Page", strconv.Itoa(page))
+
+	// Write response with caching
 	writeXMLResponse(w, urlSet.URLs, "distances", page)
 }
 
@@ -1044,8 +1106,9 @@ func getDistancesCount() int {
 	return getCachedCount("distances", func() int {
 		var count int
 		_ = config.DB.QueryRow(`
-			SELECT COUNT(DISTINCT CONCAT(from_district, '/', from_subdistrict, '/', to_district, '/', to_subdistrict)) 
-			FROM distances
+			SELECT COUNT(DISTINCT subdistrict) 
+			FROM villages 
+			WHERE subdistrict != ''
 		`).Scan(&count)
 		return count
 	})

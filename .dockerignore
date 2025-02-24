@@ -1,0 +1,9 @@
+.git
+.gitignore
+.env
+*.md
+/tmp
+/data
+*.log
+/backup/*
+!/backup/latest.sql 

@@ -7,95 +7,148 @@ import (
     "net/http"
     "os"
     "os/signal"
-    "sync"
     "syscall"
     "time"
     "github.com/gorilla/mux"
     "github.com/rs/cors"
     _ "github.com/lib/pq"
+    "go.mongodb.org/mongo-driver/mongo"
+    "go.mongodb.org/mongo-driver/mongo/options"
     "village_site/config"
     "village_site/handlers"
 )
+
+func initMongoDB() error {
+    // Get MongoDB URI from environment variable
+    mongoURI := os.Getenv("MONGO_URI")
+    if mongoURI == "" {
+        return fmt.Errorf("MONGO_URI environment variable not set")
+    }
+
+    // Set client options
+    clientOptions := options.Client().ApplyURI(mongoURI)
+
+    // Connect to MongoDB
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    client, err := mongo.Connect(ctx, clientOptions)
+    if err != nil {
+        return fmt.Errorf("failed to connect to MongoDB: %v", err)
+    }
+
+    // Ping the database
+    err = client.Ping(ctx, nil)
+    if err != nil {
+        return fmt.Errorf("failed to ping MongoDB: %v", err)
+    }
+
+    // Store the client in config package
+    config.MongoClient = client
+    config.MongoDB = client.Database("train_database")
+
+    return nil
+}
 
 func main() {
     startTime := time.Now()
     log.Printf("Starting server initialization at %s", startTime.Format(time.RFC3339))
 
-    // Initialize databases concurrently
-    var wg sync.WaitGroup
-    errChan := make(chan error, 2)
-
-    // Initialize PostgreSQL
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        if err := config.InitDBWithRetry(5); err != nil {
-            errChan <- fmt.Errorf("failed to initialize PostgreSQL: %v", err)
-            return
-        }
-        log.Println("Successfully connected to PostgreSQL database")
-    }()
-
-    // Initialize MongoDB
-    wg.Add(1)
-    go func() {
-        defer wg.Done()
-        if err := config.ConnectWithRetry(5); err != nil {
-            errChan <- fmt.Errorf("failed to initialize MongoDB: %v", err)
-            return
-        }
-        log.Println("Successfully connected to MongoDB database")
-    }()
-
-    // Wait for database initialization
-    wg.Wait()
-    close(errChan)
-
-    // Check for initialization errors
-    for err := range errChan {
-        log.Fatalf("Initialization error: %v", err)
+    // Load environment variables
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+        log.Printf("No PORT environment variable found, using default: %s", port)
     }
 
+    // Initialize PostgreSQL database with retries
+    log.Println("Initializing PostgreSQL database...")
+    if err := config.InitDBWithRetry(5); err != nil {
+        log.Fatalf("Failed to initialize PostgreSQL: %v", err)
+    }
+    log.Println("PostgreSQL database initialized successfully")
+    defer config.CloseDB()
+
+    // Initialize MongoDB with retries
+    log.Println("Initializing MongoDB...")
+    if err := config.ConnectWithRetry(5); err != nil {
+        log.Fatalf("Failed to initialize MongoDB: %v", err)
+    }
+    log.Println("MongoDB initialized successfully")
+    defer func() {
+        if err := config.MongoClient.Disconnect(context.Background()); err != nil {
+            log.Printf("Error disconnecting from MongoDB: %v", err)
+        }
+    }()
+
     // Initialize train system in background
+    log.Println("Initializing train system...")
     trainInitChan := make(chan error, 1)
     go func() {
         if err := handlers.InitializeTrainSystem(); err != nil {
+            log.Printf("Error initializing train system: %v", err)
             trainInitChan <- err
             return
         }
+        log.Println("Train system initialized successfully")
         trainInitChan <- nil
     }()
 
-    // Set up HTTP server
-    router := mux.NewRouter()
-    api := router.PathPrefix("/api/v1").Subrouter()
-    registerRoutes(api)
-
-    // Configure CORS
+    // Create router
+    r := mux.NewRouter()
+    
+    // CORS configuration
     corsHandler := cors.New(cors.Options{
-        AllowedOrigins: []string{"http://localhost:3000", "http://localhost:3001", "https://village2025.com"},
-        AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-        AllowedHeaders: []string{"Content-Type", "Authorization"},
-        MaxAge: 86400, // 24 hours
+        AllowedOrigins: []string{
+            "http://localhost:3000",
+            "https://eklavyatravel.com",
+            "https://www.eklavyatravel.com",
+        },
+        AllowedMethods: []string{
+            "GET", "POST", "PUT", "DELETE", "OPTIONS",
+        },
+        AllowedHeaders: []string{
+            "Accept", "Content-Type", "Content-Length", 
+            "Accept-Encoding", "Authorization", "X-CSRF-Token",
+        },
+        AllowCredentials: true,
     })
 
-    // Configure server
+    // Apply CORS middleware
+    r.Use(corsHandler.Handler)
+
+    // API routes
+    api := r.PathPrefix("/api/v1").Subrouter()
+    registerRoutes(api)
+    log.Println("Routes registered successfully")
+
+    // Create server with timeouts
     srv := &http.Server{
-        Addr:         getPort(),
-        Handler:      corsHandler.Handler(router),
-        ReadTimeout:  15 * time.Second,
-        WriteTimeout: 15 * time.Second,
-        IdleTimeout:  60 * time.Second,
+        Handler:           r,
+        Addr:             ":" + port,
+        WriteTimeout:      30 * time.Second,  // Increased timeout for large responses
+        ReadTimeout:      30 * time.Second,  // Increased timeout for large requests
+        IdleTimeout:      120 * time.Second, // Added idle timeout
+        ReadHeaderTimeout: 10 * time.Second,  // Added header timeout
     }
 
-    // Start server
+    // Create error channel for server errors
+    serverErrors := make(chan error, 1)
+
+    // Start server in a goroutine
     go func() {
-        log.Printf("Server initialization completed in %v", time.Since(startTime))
-        log.Printf("Server starting on port %s", srv.Addr)
+        log.Printf("Starting server on port %s...", port)
         if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-            log.Fatalf("Server failed to start: %v", err)
+            log.Printf("Server error: %v", err)
+            serverErrors <- err
         }
     }()
+
+    // Wait for server to start
+    time.Sleep(1 * time.Second)
+    log.Printf("Server is running at http://localhost:%s", port)
+    log.Printf("Health check endpoint: http://localhost:%s/api/v1/health", port)
+    log.Printf("Sitemap endpoint: http://localhost:%s/api/v1/sitemaps", port)
 
     // Wait for train system initialization
     if err := <-trainInitChan; err != nil {
@@ -106,14 +159,23 @@ func main() {
     // Handle graceful shutdown
     stop := make(chan os.Signal, 1)
     signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
-    <-stop
+
+    // Wait for shutdown signal or server error
+    select {
+    case <-stop:
+        log.Println("Shutdown signal received")
+    case err := <-serverErrors:
+        log.Printf("Server error received: %v", err)
+    }
 
     log.Println("Shutting down server...")
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
     if err := srv.Shutdown(ctx); err != nil {
         log.Printf("Error during server shutdown: %v", err)
+    } else {
+        log.Println("Server shutdown completed successfully")
     }
 }
 
@@ -185,12 +247,4 @@ func registerRoutes(api *mux.Router) {
     api.HandleFunc("/sitemaps/mandals", handlers.GetMandalsSitemap).Methods("GET")
     api.HandleFunc("/sitemaps/pincodes", handlers.GetPincodesSitemap).Methods("GET")
     api.HandleFunc("/sitemaps/distances", handlers.GetDistancesSitemap).Methods("GET")
-}
-
-func getPort() string {
-    port := os.Getenv("PORT")
-    if port == "" {
-        port = "8080"
-    }
-    return ":" + port
 }

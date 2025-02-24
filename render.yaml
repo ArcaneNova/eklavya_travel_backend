@@ -1,0 +1,63 @@
+services:
+  # Database service
+  - type: pserv
+    name: village-db
+    env: docker
+    plan: starter
+    region: singapore
+    disk:
+      name: data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 10
+    image: postgres:14-alpine
+    envVars:
+      - key: POSTGRES_DB
+        value: indiavillage
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
+
+  # Web service
+  - type: web
+    name: village-backend
+    env: docker
+    region: singapore
+    plan: starter
+    healthCheckPath: /api/v1/health
+    buildCommand: |
+      # Make backup directory
+      mkdir -p backup
+      # Copy the latest backup to the correct location
+      if [ -f backup/*.sql ]; then
+        cp backup/*.sql backup/latest.sql
+      fi
+    startCommand: ./entrypoint.sh
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DB_HOST
+        fromService:
+          type: pserv
+          name: village-db
+          property: host
+      - key: DB_PORT
+        value: 5432
+      - key: DB_USER
+        fromService:
+          type: pserv
+          name: village-db
+          envVarKey: POSTGRES_USER
+      - key: DB_PASSWORD
+        fromService:
+          type: pserv
+          name: village-db
+          envVarKey: POSTGRES_PASSWORD
+      - key: DB_NAME
+        value: indiavillage
+      - key: MONGO_USERNAME
+        sync: false
+      - key: MONGO_PASSWORD
+        sync: false
+      - key: MONGO_URI
+        sync: false 
