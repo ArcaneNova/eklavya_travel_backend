@@ -4,6 +4,7 @@ import (
     "encoding/json"
     "net/http"
     "village_site/config"
+    "log"
 )
 
 type LocationRequest struct {
@@ -20,22 +21,64 @@ type LocationResponse struct {
 }
 
 func GetLocations(w http.ResponseWriter, r *http.Request) {
+    log.Printf("GetLocations: Starting request handling")
+
+    // Check if DB is nil
+    if config.DB == nil {
+        log.Printf("GetLocations: Database connection is nil")
+        http.Error(w, "Database connection not initialized", http.StatusInternalServerError)
+        return
+    }
+
+    // Check DB connection
+    if err := config.DB.Ping(); err != nil {
+        log.Printf("GetLocations: Database ping failed: %v", err)
+        http.Error(w, "Database connection error", http.StatusInternalServerError)
+        return
+    }
+
+    // Check if villages table exists
+    var tableExists bool
+    err := config.DB.QueryRow(`
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_name = 'villages'
+        )`).Scan(&tableExists)
+    
+    if err != nil {
+        log.Printf("GetLocations: Error checking table existence: %v", err)
+        http.Error(w, "Error checking database structure", http.StatusInternalServerError)
+        return
+    }
+
+    if !tableExists {
+        log.Printf("GetLocations: villages table does not exist")
+        http.Error(w, "Required table not found", http.StatusInternalServerError)
+        return
+    }
+
     var req LocationRequest
     if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        log.Printf("GetLocations: Error decoding request body: %v", err)
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
+
+    log.Printf("GetLocations: Received request with State=%s, District=%s, Subdistrict=%s", 
+        req.State, req.District, req.Subdistrict)
 
     var response LocationResponse
 
     // If no state provided, return list of states
     if req.State == "" {
+        log.Printf("GetLocations: Fetching list of states")
         rows, err := config.DB.Query(`
             SELECT DISTINCT state 
             FROM villages 
             WHERE state IS NOT NULL
             ORDER BY state`)
         if err != nil {
+            log.Printf("GetLocations: Error querying states: %v", err)
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
         }
@@ -45,6 +88,7 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
         for rows.Next() {
             var state string
             if err := rows.Scan(&state); err != nil {
+                log.Printf("GetLocations: Error scanning state: %v", err)
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
             }
@@ -53,9 +97,11 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
             }
         }
         response.States = states
+        log.Printf("GetLocations: Found %d states", len(states))
 
     } else if req.District == "" {
         // Get districts for state
+        log.Printf("GetLocations: Fetching districts for state: %s", req.State)
         rows, err := config.DB.Query(`
             SELECT DISTINCT district 
             FROM villages 
@@ -63,6 +109,7 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
             AND district IS NOT NULL
             ORDER BY district`, req.State)
         if err != nil {
+            log.Printf("GetLocations: Error querying districts: %v", err)
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
         }
@@ -72,6 +119,7 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
         for rows.Next() {
             var district string
             if err := rows.Scan(&district); err != nil {
+                log.Printf("GetLocations: Error scanning district: %v", err)
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
             }
@@ -80,9 +128,11 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
             }
         }
         response.Districts = districts
+        log.Printf("GetLocations: Found %d districts for state %s", len(districts), req.State)
 
     } else if req.Subdistrict == "" {
         // Get subdistricts for district
+        log.Printf("GetLocations: Fetching subdistricts for state: %s, district: %s", req.State, req.District)
         rows, err := config.DB.Query(`
             SELECT DISTINCT subdistrict 
             FROM villages 
@@ -91,6 +141,7 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
             AND subdistrict IS NOT NULL
             ORDER BY subdistrict`, req.State, req.District)
         if err != nil {
+            log.Printf("GetLocations: Error querying subdistricts: %v", err)
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
         }
@@ -100,6 +151,7 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
         for rows.Next() {
             var subdistrict string
             if err := rows.Scan(&subdistrict); err != nil {
+                log.Printf("GetLocations: Error scanning subdistrict: %v", err)
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
             }
@@ -108,9 +160,13 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
             }
         }
         response.Subdistricts = subdistricts
+        log.Printf("GetLocations: Found %d subdistricts for state %s, district %s", 
+            len(subdistricts), req.State, req.District)
 
     } else {
         // Get villages/localities for subdistrict
+        log.Printf("GetLocations: Fetching villages for state: %s, district: %s, subdistrict: %s", 
+            req.State, req.District, req.Subdistrict)
         rows, err := config.DB.Query(`
             SELECT DISTINCT locality 
             FROM villages 
@@ -120,6 +176,7 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
             AND locality IS NOT NULL
             ORDER BY locality`, req.State, req.District, req.Subdistrict)
         if err != nil {
+            log.Printf("GetLocations: Error querying villages: %v", err)
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
         }
@@ -129,6 +186,7 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
         for rows.Next() {
             var village string
             if err := rows.Scan(&village); err != nil {
+                log.Printf("GetLocations: Error scanning village: %v", err)
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
             }
@@ -137,6 +195,8 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
             }
         }
         response.Villages = villages
+        log.Printf("GetLocations: Found %d villages for state %s, district %s, subdistrict %s", 
+            len(villages), req.State, req.District, req.Subdistrict)
     }
 
     // Add cache control headers
@@ -145,9 +205,11 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
     
     // Return response
     if err := json.NewEncoder(w).Encode(response); err != nil {
+        log.Printf("GetLocations: Error encoding response: %v", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
+    log.Printf("GetLocations: Successfully sent response")
 }
 
 // Additional helper function to check if location exists

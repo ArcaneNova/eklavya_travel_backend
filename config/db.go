@@ -117,6 +117,7 @@ func InitDB() error {
         "password": os.Getenv("DB_PASSWORD"),
         "host":     os.Getenv("DB_HOST"),
         "port":     os.Getenv("DB_PORT"),
+        "sslmode":  os.Getenv("DB_SSL_MODE"),
     }
 
     // Log current environment variables (excluding sensitive data)
@@ -124,6 +125,7 @@ func InitDB() error {
     log.Printf("DB Port: %s", dbParams["port"])
     log.Printf("DB Name: %s", dbParams["dbname"])
     log.Printf("DB User: %s", dbParams["user"])
+    log.Printf("SSL Mode: %s", dbParams["sslmode"])
 
     // Use default values if environment variables are not set
     if dbParams["dbname"] == "" {
@@ -132,35 +134,28 @@ func InitDB() error {
     if dbParams["user"] == "" {
         dbParams["user"] = "avnadmin"
     }
-    if dbParams["password"] == "" {
-        dbParams["password"] = "1234"
-    }
     if dbParams["host"] == "" {
         dbParams["host"] = "localhost"
     }
     if dbParams["port"] == "" {
         dbParams["port"] = "5432"
     }
-
-    // Check if we're connecting to Aiven (based on hostname)
-    isAiven := strings.Contains(dbParams["host"], "aivencloud.com")
-
-    var connStr string
-    if isAiven {
-        // Always use SSL for Aiven connections
-        connStr = fmt.Sprintf(
-            "host=%s port=%s user=%s password=%s dbname=%s sslmode=require",
-            dbParams["host"], dbParams["port"], dbParams["user"], 
-            dbParams["password"], dbParams["dbname"])
-        log.Printf("Connecting to Aiven PostgreSQL with SSL enabled")
-    } else {
-        // Local development without SSL
-        connStr = fmt.Sprintf(
-            "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-            dbParams["host"], dbParams["port"], dbParams["user"], 
-            dbParams["password"], dbParams["dbname"])
-        log.Printf("Connecting to local PostgreSQL without SSL")
+    if dbParams["sslmode"] == "" {
+        // Default to require SSL for Aiven
+        if strings.Contains(dbParams["host"], "aivencloud.com") {
+            dbParams["sslmode"] = "require"
+        } else {
+            dbParams["sslmode"] = "disable"
+        }
     }
+
+    // Build connection string
+    connStr := fmt.Sprintf(
+        "host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+        dbParams["host"], dbParams["port"], dbParams["user"], 
+        dbParams["password"], dbParams["dbname"], dbParams["sslmode"])
+
+    log.Printf("Connecting to PostgreSQL with sslmode=%s", dbParams["sslmode"])
 
     var err error
     DB, err = sql.Open("postgres", connStr)
@@ -169,12 +164,12 @@ func InitDB() error {
     }
 
     // Set connection pool settings
-    DB.SetMaxOpenConns(100)
-    DB.SetMaxIdleConns(25)
-    DB.SetConnMaxLifetime(30 * time.Minute)
+    DB.SetMaxOpenConns(25)  // Reduced from 100 to prevent overwhelming the connection
+    DB.SetMaxIdleConns(5)   // Reduced from 25 to prevent idle connections
+    DB.SetConnMaxLifetime(5 * time.Minute)  // Reduced from 30 to recycle connections more frequently
 
-    // Verify connection
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    // Verify connection with timeout
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
 
     if err = DB.PingContext(ctx); err != nil {
@@ -182,6 +177,24 @@ func InitDB() error {
     }
 
     log.Printf("Successfully connected to PostgreSQL database: %s", dbParams["dbname"])
+
+    // Verify villages table exists
+    var tableExists bool
+    err = DB.QueryRowContext(ctx, `
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_name = 'villages'
+        )`).Scan(&tableExists)
+    
+    if err != nil {
+        return fmt.Errorf("error checking villages table: %v", err)
+    }
+
+    if !tableExists {
+        return fmt.Errorf("villages table does not exist in the database")
+    }
+
+    log.Printf("Verified villages table exists")
     return nil
 }
 
