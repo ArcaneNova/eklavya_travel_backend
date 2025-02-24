@@ -2,18 +2,12 @@ services:
   # Web service
   - type: web
     name: village-backend
-    env: docker
+    env: go
     region: singapore
     plan: starter
+    buildCommand: go build -o app
+    startCommand: ./app
     healthCheckPath: /api/v1/health
-    buildCommand: |
-      # Make backup directory
-      mkdir -p backup
-      # Copy the latest backup to the correct location
-      if [ -f backup/*.sql ]; then
-        cp backup/*.sql backup/latest.sql
-      fi
-    startCommand: ./entrypoint.sh
     envVars:
       - key: PORT
         value: 8080
@@ -28,9 +22,7 @@ services:
       - key: DB_NAME
         value: defaultdb
       - key: DB_SSL_MODE
-        value: verify-full
-      - key: DB_SSL_CA
-        value: /etc/ssl/certs/ca.crt
+        value: require
       - key: MONGO_USERNAME
         sync: false
       - key: MONGO_PASSWORD

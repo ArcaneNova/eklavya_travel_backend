@@ -108,15 +108,14 @@ func InitDB() error {
         "host":     os.Getenv("DB_HOST"),
         "port":     os.Getenv("DB_PORT"),
         "sslmode":  os.Getenv("DB_SSL_MODE"),
-        "sslcert": os.Getenv("DB_SSL_CA"),
     }
 
     // Use default values if environment variables are not set
     if dbParams["dbname"] == "" {
-        dbParams["dbname"] = "indiavillage"
+        dbParams["dbname"] = "defaultdb"
     }
     if dbParams["user"] == "" {
-        dbParams["user"] = "postgres"
+        dbParams["user"] = "avnadmin"
     }
     if dbParams["password"] == "" {
         dbParams["password"] = "1234"
@@ -128,22 +127,18 @@ func InitDB() error {
         dbParams["port"] = "5432"
     }
     if dbParams["sslmode"] == "" {
-        dbParams["sslmode"] = "disable"
+        dbParams["sslmode"] = "require"  // Changed to require instead of verify-full
     }
 
-    psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
-        dbParams["host"], dbParams["port"], dbParams["user"], dbParams["password"], dbParams["dbname"])
+    // Build connection string
+    connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+        dbParams["host"], dbParams["port"], dbParams["user"], 
+        dbParams["password"], dbParams["dbname"], dbParams["sslmode"])
+
+    log.Printf("Attempting to connect to PostgreSQL with SSL mode: %s", dbParams["sslmode"])
     
-    // Add SSL parameters if SSL mode is set
-    if dbParams["sslmode"] != "disable" {
-        psqlInfo += fmt.Sprintf(" sslmode=%s sslrootcert=%s",
-            dbParams["sslmode"], dbParams["sslcert"])
-    } else {
-        psqlInfo += " sslmode=disable"
-    }
-
     var err error
-    DB, err = sql.Open("postgres", psqlInfo)
+    DB, err = sql.Open("postgres", connStr)
     if err != nil {
         return fmt.Errorf("error opening PostgreSQL database: %v", err)
     }
