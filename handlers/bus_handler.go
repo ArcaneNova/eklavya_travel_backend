@@ -186,6 +186,13 @@ func debugBusRoutes(ctx context.Context, city string) {
     }
 }
 
+// Helper function for sending JSON responses
+func sendJSONResponse(w http.ResponseWriter, data interface{}, statusCode int) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(statusCode)
+    json.NewEncoder(w).Encode(data)
+}
+
 // Main handler functions
 func GetCityRoutes(w http.ResponseWriter, r *http.Request) {
     var req struct {
@@ -193,7 +200,7 @@ func GetCityRoutes(w http.ResponseWriter, r *http.Request) {
     }
     if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
         log.Printf("Error decoding request: %v", err)
-        http.Error(w, "Invalid request format", http.StatusBadRequest)
+        sendJSONResponse(w, map[string]string{"error": "Invalid request format"}, http.StatusBadRequest)
         return
     }
 
@@ -213,7 +220,7 @@ func GetCityRoutes(w http.ResponseWriter, r *http.Request) {
     cursor, err := collection.Find(ctx, filter, opts)
     if err != nil {
         log.Printf("Database error: %v", err)
-        http.Error(w, "Error fetching routes", http.StatusInternalServerError)
+        sendJSONResponse(w, map[string]string{"error": "Error fetching routes"}, http.StatusInternalServerError)
         return
     }
     defer cursor.Close(ctx)
@@ -221,7 +228,7 @@ func GetCityRoutes(w http.ResponseWriter, r *http.Request) {
     var routes []BusRoute
     if err = cursor.All(ctx, &routes); err != nil {
         log.Printf("Error processing routes: %v", err)
-        http.Error(w, "Error processing routes", http.StatusInternalServerError)
+        sendJSONResponse(w, map[string]string{"error": "Error processing routes"}, http.StatusInternalServerError)
         return
     }
 
@@ -244,12 +251,11 @@ func GetCityRoutes(w http.ResponseWriter, r *http.Request) {
         })
     }
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]interface{}{
+    sendJSONResponse(w, map[string]interface{}{
         "city":   req.City,
         "routes": routeInfos,
         "count":  len(routeInfos),
-    })
+    }, http.StatusOK)
 }
 
 func GetBusRoute(w http.ResponseWriter, r *http.Request) {
@@ -1027,7 +1033,7 @@ func GetBusStopSuggestions(w http.ResponseWriter, r *http.Request) {
     searchTerm := r.URL.Query().Get("q")
 
     if city == "" {
-        http.Error(w, "City is required", http.StatusBadRequest)
+        sendJSONResponse(w, map[string]string{"error": "City is required"}, http.StatusBadRequest)
         return
     }
 
@@ -1074,7 +1080,7 @@ func GetBusStopSuggestions(w http.ResponseWriter, r *http.Request) {
     cursor, err := collection.Aggregate(ctx, pipeline)
     if err != nil {
         log.Printf("Database error: %v", err)
-        http.Error(w, "Error fetching suggestions", http.StatusInternalServerError)
+        sendJSONResponse(w, map[string]string{"error": "Error fetching suggestions"}, http.StatusInternalServerError)
         return
     }
     defer cursor.Close(ctx)
@@ -1104,10 +1110,9 @@ func GetBusStopSuggestions(w http.ResponseWriter, r *http.Request) {
         }
     }
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(map[string]interface{}{
+    sendJSONResponse(w, map[string]interface{}{
         "suggestions": suggestions,
-    })
+    }, http.StatusOK)
 }
 
 // Add this function to handle city suggestions
