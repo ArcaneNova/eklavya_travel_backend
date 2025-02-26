@@ -46,7 +46,7 @@ type SitemapURL struct {
 
 const (
 	maxURLsPerSitemap = 10000
-	baseURL = "https://eklavyatravel.com"
+	baseURL = "https://villagedirectory.in"
 	XMLHeader = `<?xml version="1.0" encoding="UTF-8"?>`
 	sitemapCacheDuration = 24 * time.Hour // Cache sitemaps for 24 hours
 )
@@ -190,22 +190,7 @@ func GetVillagesSitemap(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Set up streaming response
-	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-	w.Header().Set("Content-Encoding", "gzip")
-	w.Header().Set("X-Robots-Tag", "noindex")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("X-Total-Pages", strconv.Itoa(maxPages))
-	w.Header().Set("X-Current-Page", strconv.Itoa(page))
-
-	gz := gzip.NewWriter(w)
-	defer gz.Close()
-
-	// Start XML document
-	fmt.Fprintf(gz, xml.Header)
-	fmt.Fprintf(gz, "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
-
-	// Stream results in batches
+	// Get paginated results
 	rows, err := config.DB.Query(`
 		SELECT state, district, subdistrict, locality 
 		FROM villages 
@@ -218,7 +203,17 @@ func GetVillagesSitemap(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	// Use buffer for better performance
+	// Initialize gzip writer
+	w.Header().Set("Content-Type", "application/xml")
+	w.Header().Set("Content-Encoding", "gzip")
+	gz := gzip.NewWriter(w)
+	defer gz.Close()
+
+	// Write XML header
+	fmt.Fprintf(gz, xml.Header)
+	fmt.Fprintf(gz, "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
+
+	// Buffer for building URLs
 	var buf bytes.Buffer
 	now := time.Now().Format("2006-01-02")
 
@@ -277,9 +272,8 @@ func GetMandalsSitemap(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	urlSet := URLSet{
-		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
-	}
+	var urls []URL
+	now := time.Now().Format("2006-01-02")
 
 	for rows.Next() {
 		var district, subdistrict string
@@ -287,18 +281,20 @@ func GetMandalsSitemap(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/mandal/%s/%s",
-				baseURL,
-				url.PathEscape(district),
-				url.PathEscape(subdistrict)),
+		urls = append(urls, URL{
+			Loc:        fmt.Sprintf("%s/mandal/%s/%s", baseURL, district, subdistrict),
+			LastMod:    now,
 			ChangeFreq: "monthly",
 			Priority:   0.6,
-			LastMod:   time.Now().Format("2006-01-02"),
 		})
 	}
 
-	writeXMLResponse(w, urlSet.URLs, "mandals", page)
+	// Set pagination headers
+	maxPages := (total + limit - 1) / limit
+	w.Header().Set("X-Total-Pages", strconv.Itoa(maxPages))
+	w.Header().Set("X-Current-Page", strconv.Itoa(page))
+
+	writeXMLResponse(w, urls, "mandals", page)
 }
 
 func GetPincodesSitemap(w http.ResponseWriter, r *http.Request) {
@@ -307,12 +303,7 @@ func GetPincodesSitemap(w http.ResponseWriter, r *http.Request) {
 
 	// Get total count first
 	var total int
-	err := config.DB.QueryRow(`
-		SELECT COUNT(*) FROM (
-			SELECT DISTINCT pincode, officename, district, state 
-			FROM pin_details
-		) t
-	`).Scan(&total)
+	err := config.DB.QueryRow("SELECT COUNT(DISTINCT pincode) FROM pin_details").Scan(&total)
 	if err != nil {
 		http.Error(w, "Error counting pincodes", http.StatusInternalServerError)
 		return
@@ -321,88 +312,37 @@ func GetPincodesSitemap(w http.ResponseWriter, r *http.Request) {
 	// Calculate max pages
 	maxPages := (total + limit - 1) / limit
 	if page > maxPages {
-		http.Error(w, "Invalid page number", http.StatusBadRequest)
+		http.Error(w, "Page number exceeds maximum pages", http.StatusBadRequest)
 		return
 	}
 
-	// Get paginated results with optimized query
+	// Get paginated results
 	rows, err := config.DB.Query(`
-		WITH RECURSIVE pin_hierarchy AS (
-			SELECT DISTINCT 
-				pincode,
-				officename,
-				district,
-				state,
-				ROW_NUMBER() OVER (
-					ORDER BY state, district, pincode, officename
-				) as rn
-			FROM pin_details
-		)
-		SELECT 
-			pincode,
-			officename,
-			district,
-			state
-		FROM pin_hierarchy
-		WHERE rn > $1 AND rn <= $2
-	`, offset, offset+limit)
+		SELECT DISTINCT pincode 
+		FROM pin_details 
+		ORDER BY pincode
+		LIMIT $1 OFFSET $2
+	`, limit, offset)
 	if err != nil {
 		http.Error(w, "Error generating sitemap", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	urlSet := URLSet{
-		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
-	}
-
+	var urlSet URLSet
 	now := time.Now().Format("2006-01-02")
+
 	for rows.Next() {
-		var pincode, officeName, district, state string
-		if err := rows.Scan(&pincode, &officeName, &district, &state); err != nil {
+		var pincode string
+		if err := rows.Scan(&pincode); err != nil {
 			continue
 		}
 
-		// Pincode page
 		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/pincode/%s",
-				baseURL,
-				url.PathEscape(pincode)),
-			LastMod:    now,
-			ChangeFreq: "monthly",
-			Priority:   0.7,
-		})
-
-		// Post office page
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/post-office/%s/%s",
-				baseURL,
-				url.PathEscape(state),
-				url.PathEscape(officeName)),
+			Loc:        fmt.Sprintf("%s/pincode/%s", baseURL, pincode),
 			LastMod:    now,
 			ChangeFreq: "monthly",
 			Priority:   0.6,
-		})
-
-		// District post offices page
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/post-offices/%s/%s",
-				baseURL,
-				url.PathEscape(state),
-				url.PathEscape(district)),
-			LastMod:    now,
-			ChangeFreq: "monthly",
-			Priority:   0.6,
-		})
-
-		// State post offices page
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/post-offices/%s",
-				baseURL,
-				url.PathEscape(state)),
-			LastMod:    now,
-			ChangeFreq: "monthly",
-			Priority:   0.7,
 		})
 	}
 
@@ -471,62 +411,39 @@ func GetDistancesSitemap(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := config.DB.Query(query, (page-1)*limit, limit)
 	if err != nil {
-		http.Error(w, "Error fetching distances: " + err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error generating sitemap: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	urlSet := URLSet{
-		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
-	}
-
+	var urlSet URLSet
 	now := time.Now().Format("2006-01-02")
-	processedDistricts := make(map[string]bool)
 
 	for rows.Next() {
 		var fromState, fromDistrict, fromSubdistrict string
 		var toState, toDistrict, toSubdistrict string
-
+		
 		err := rows.Scan(&fromState, &fromDistrict, &fromSubdistrict,
 			&toState, &toDistrict, &toSubdistrict)
 		if err != nil {
 			continue
 		}
 
-		// Skip empty values
-		if fromSubdistrict == "" || toSubdistrict == "" {
-			continue
-		}
+		url := fmt.Sprintf("%s/distance/%s/%s/%s/to/%s/%s/%s",
+			baseURL,
+			url.PathEscape(fromState),
+			url.PathEscape(fromDistrict),
+			url.PathEscape(fromSubdistrict),
+			url.PathEscape(toState),
+			url.PathEscape(toDistrict),
+			url.PathEscape(toSubdistrict))
 
-		// Clean and encode location names
-		fromState = url.PathEscape(cleanName(fromState))
-		fromDistrict = url.PathEscape(cleanName(fromDistrict))
-		fromSubdistrict = url.PathEscape(cleanName(fromSubdistrict))
-		toState = url.PathEscape(cleanName(toState))
-		toDistrict = url.PathEscape(cleanName(toDistrict))
-		toSubdistrict = url.PathEscape(cleanName(toSubdistrict))
-
-		// Main distance page
 		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/distance-between/%s/%s/%s/%s",
-				baseURL, fromDistrict, fromSubdistrict, toDistrict, toSubdistrict),
+			Loc:        url,
 			LastMod:    now,
-			ChangeFreq: "weekly",
-			Priority:   0.7,
+			ChangeFreq: "monthly",
+			Priority:   0.5,
 		})
-
-		// Add district-level pages if not already processed
-		districtKey := fromDistrict + "-" + toDistrict
-		if !processedDistricts[districtKey] {
-			processedDistricts[districtKey] = true
-			urlSet.URLs = append(urlSet.URLs, URL{
-				Loc: fmt.Sprintf("%s/distance-between/%s/to/%s",
-					baseURL, fromDistrict, toDistrict),
-				LastMod:    now,
-				ChangeFreq: "weekly",
-				Priority:   0.6,
-			})
-		}
 	}
 
 	// Set pagination headers
@@ -541,14 +458,6 @@ func getVillagesCount() int {
 	return getCachedCount("villages", func() int {
 		var count int
 		_ = config.DB.QueryRow("SELECT COUNT(*) FROM villages").Scan(&count)
-		return count
-	})
-}
-
-func getMandalsCount() int {
-	return getCachedCount("mandals", func() int {
-		var count int
-		_ = config.DB.QueryRow("SELECT COUNT(DISTINCT district || '/' || subdistrict) FROM mandals").Scan(&count)
 		return count
 	})
 }
