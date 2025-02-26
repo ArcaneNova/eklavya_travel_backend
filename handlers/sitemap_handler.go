@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"encoding/xml"
 	"fmt"
 	"net/http"
@@ -10,8 +9,6 @@ import (
 	"sync"
 	"time"
 	"village_site/config"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"compress/gzip"
 	"bytes"
 	"strings"
@@ -55,14 +52,8 @@ const (
 )
 
 var (
-	countCache = make(map[string]struct {
-		count     int
-		expiresAt time.Time
-	})
-	countMutex sync.RWMutex
-
-	// Replace the existing sitemapCache with sync.Map
-	sitemapCache sync.Map
+	sitemapCache = make(map[string]sitemapCacheEntry)
+	cacheMutex   sync.RWMutex
 )
 
 type sitemapCacheEntry struct {
@@ -70,615 +61,116 @@ type sitemapCacheEntry struct {
 	expiresAt time.Time
 }
 
-// getCachedCount gets a count from cache or calls the provider function
 func getCachedCount(key string, provider func() int) int {
-	countMutex.RLock()
-	if cached, ok := countCache[key]; ok && time.Now().Before(cached.expiresAt) {
-		countMutex.RUnlock()
-		return cached.count
-	}
-	countMutex.RUnlock()
+	cacheMutex.RLock()
+	entry, exists := sitemapCache[key]
+	cacheMutex.RUnlock()
 
-	// Cache miss or expired, get new count
-	count := provider()
-	
-	countMutex.Lock()
-	countCache[key] = struct {
-		count     int
-		expiresAt time.Time
-	}{
-		count:     count,
-		expiresAt: time.Now().Add(cacheDuration),
+	if exists && time.Now().Before(entry.expiresAt) {
+		return provider()
 	}
-	countMutex.Unlock()
+
+	count := provider()
+
+	cacheMutex.Lock()
+	sitemapCache[key] = sitemapCacheEntry{
+		content:   nil,
+		expiresAt: time.Now().Add(24 * time.Hour),
+	}
+	cacheMutex.Unlock()
 
 	return count
 }
 
-// getSitemapCacheKey generates a unique cache key for a sitemap
 func getSitemapCacheKey(section string, page int) string {
 	return fmt.Sprintf("%s_page_%d", section, page)
 }
 
-// getCachedSitemap retrieves a cached sitemap if it exists and is fresh
 func getCachedSitemap(section string, page int) ([]byte, bool) {
 	key := getSitemapCacheKey(section, page)
 	
-	if value, ok := sitemapCache.Load(key); ok {
-		entry := value.(sitemapCacheEntry)
-		if time.Now().Before(entry.expiresAt) {
-			return entry.content, true
-		}
-		// Remove expired entry
-		sitemapCache.Delete(key)
+	cacheMutex.RLock()
+	entry, exists := sitemapCache[key]
+	cacheMutex.RUnlock()
+
+	if exists && time.Now().Before(entry.expiresAt) {
+		return entry.content, true
 	}
-	
 	return nil, false
 }
 
-// cacheSitemap stores a generated sitemap in the cache
 func cacheSitemap(section string, page int, content []byte) {
 	key := getSitemapCacheKey(section, page)
 	
-	entry := sitemapCacheEntry{
+	cacheMutex.Lock()
+	sitemapCache[key] = sitemapCacheEntry{
 		content:   content,
-		expiresAt: time.Now().Add(sitemapCacheDuration),
+		expiresAt: time.Now().Add(24 * time.Hour),
 	}
-	
-	sitemapCache.Store(key, entry)
+	cacheMutex.Unlock()
 }
 
-// sitemapExists checks if a sitemap for the given section and page already exists and is still fresh
 func sitemapExists(section string, page int) bool {
-	cacheKey := getSitemapCacheKey(section, page)
-	_, exists := sitemapCache.Load(cacheKey)
+	_, exists := getCachedSitemap(section, page)
 	return exists
 }
 
-// GetSitemapIndex handles the main sitemap index request with pagination info
 func GetSitemapIndex(w http.ResponseWriter, r *http.Request) {
-	sections := []struct {
-		name     string
-		getCount func() int
-		priority float64
-	}{
-		{name: "bus-routes", getCount: getBusRoutesCount, priority: 0.8},
-		{name: "train-routes", getCount: getTrainRoutesCount, priority: 0.8},
-		{name: "distances", getCount: getDistancesCount, priority: 0.7},
-		{name: "banks", getCount: getBanksCount, priority: 0.7},
-		{name: "companies", getCount: getCompaniesCount, priority: 0.7},
-		{name: "villages", getCount: getVillagesCount, priority: 0.8},
-		{name: "mandals", getCount: getMandalsCount, priority: 0.8},
-		{name: "pincodes", getCount: getPincodesCount, priority: 0.7},
+	baseURL := "https://eklavyatravel.com/api/v1/sitemaps"
+	lastmod := time.Now().Format("2006-01-02")
+
+	sitemaps := []Sitemap{
+		{Loc: fmt.Sprintf("%s/villages", baseURL), LastMod: lastmod},
+		{Loc: fmt.Sprintf("%s/mandals", baseURL), LastMod: lastmod},
+		{Loc: fmt.Sprintf("%s/pincodes", baseURL), LastMod: lastmod},
+		{Loc: fmt.Sprintf("%s/distances", baseURL), LastMod: lastmod},
+	}
+
+	index := SitemapIndex{
+		XMLNS:    "http://www.sitemaps.org/schemas/sitemap/0.9",
+		Sitemaps: sitemaps,
 	}
 
 	w.Header().Set("Content-Type", "application/xml")
-	w.Header().Set("X-Robots-Tag", "noindex")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", int(cacheDuration.Seconds())))
-
-	// Create response structure
-	index := SitemapIndex{
-		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
-	}
-
-	now := time.Now().Format(time.RFC3339)
-
-	// Process each section
-	for _, section := range sections {
-		count := getCachedCount(section.name, section.getCount)
-		pageCount := (count + maxURLsPerSitemap - 1) / maxURLsPerSitemap
-
-		for page := 1; page <= pageCount; page++ {
-			// Check if sitemap exists and is fresh
-			exists := sitemapExists(section.name, page)
-			
-			// Add sitemap entry
-			sitemap := Sitemap{
-				Loc:     fmt.Sprintf("%s/api/v1/sitemaps/%s?page=%d", baseURL, section.name, page),
-				LastMod: now,
-			}
-			
-			// Add cache status as a comment in the XML
-			if exists {
-				sitemap.Loc += "<!-- cached -->"
-			}
-			
-			index.Sitemaps = append(index.Sitemaps, sitemap)
-		}
-	}
-
-	// Marshal and write response
-	output, err := xml.MarshalIndent(index, "", "  ")
-	if err != nil {
-		http.Error(w, "Error generating sitemap index", http.StatusInternalServerError)
-		return
-	}
-
-	fmt.Fprintf(w, "%s%s", xml.Header, output)
+	w.Write([]byte(xml.Header))
+	enc := xml.NewEncoder(w)
+	enc.Indent("", "  ")
+	enc.Encode(index)
 }
 
-// GetBusRoutesSitemap generates sitemap for bus routes
-func GetBusRoutesSitemap(w http.ResponseWriter, r *http.Request) {
-	page, limit := getPaginationParams(r)
-	
-	// Check cache first
-	if cached, ok := getCachedSitemap("bus-routes", page); ok {
-		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-		w.Header().Set("Content-Encoding", "gzip")
-		w.Header().Set("X-Robots-Tag", "noindex")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("X-Cache", "HIT")
-		w.Write(cached)
-		return
-	}
-
-	offset := (page - 1) * limit
-
-	collection := config.MongoDB.Collection("bus_routes")
-	ctx := r.Context()
-
-	// First, get all routes grouped by city with their stops
-	pipeline := []bson.M{
-		{
-			"$project": bson.M{
-				"city":          1,
-				"route_name":    1,
-				"stops":         1,
-			},
-		},
-		{
-			"$sort": bson.M{
-				"city": 1,
-				"route_name": 1,
-			},
-		},
-		{
-			"$skip": offset,
-		},
-		{
-			"$limit": limit,
-		},
-	}
-
-	cursor, err := collection.Aggregate(ctx, pipeline)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer cursor.Close(ctx)
-
-	urlSet := URLSet{
-		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
-	}
-
-	now := time.Now().Format("2006-01-02")
-	for cursor.Next(ctx) {
-		var route struct {
-			City      string   `bson:"city"`
-			RouteName string   `bson:"route_name"`
-			Stops     []string `bson:"stops"`
-		}
-		if err := cursor.Decode(&route); err != nil {
-			continue
-		}
-
-		// Main route page
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc:        fmt.Sprintf("%s/bus/%s/%s", baseURL, url.PathEscape(route.City), url.PathEscape(route.RouteName)),
-			LastMod:    now,
-			ChangeFreq: "weekly",
-			Priority:   0.8,
-		})
-
-		// Generate URLs for all possible stop combinations
-		for i := 0; i < len(route.Stops); i++ {
-			fromStop := route.Stops[i]
-			if fromStop == "" {
-				continue
-			}
-
-			// Generate URLs to all subsequent stops
-			for j := i + 1; j < len(route.Stops); j++ {
-				toStop := route.Stops[j]
-				if toStop == "" || toStop == fromStop {
-					continue
-				}
-
-				urlSet.URLs = append(urlSet.URLs, URL{
-					Loc: fmt.Sprintf("%s/bus/%s/%s/from/%s/to/%s",
-						baseURL,
-						url.PathEscape(route.City),
-						url.PathEscape(route.RouteName),
-						url.PathEscape(fromStop),
-						url.PathEscape(toStop)),
-					LastMod:    now,
-					ChangeFreq: "weekly",
-					Priority:   0.7,
-				})
-
-				// Also add reverse direction
-				urlSet.URLs = append(urlSet.URLs, URL{
-					Loc: fmt.Sprintf("%s/bus/%s/%s/from/%s/to/%s",
-						baseURL,
-						url.PathEscape(route.City),
-						url.PathEscape(route.RouteName),
-						url.PathEscape(toStop),
-						url.PathEscape(fromStop)),
-					LastMod:    now,
-					ChangeFreq: "weekly",
-					Priority:   0.7,
-				})
-			}
-
-			// Add city-level stop combinations
-			urlSet.URLs = append(urlSet.URLs, URL{
-				Loc: fmt.Sprintf("%s/bus/%s/from/%s",
-					baseURL,
-					url.PathEscape(route.City),
-					url.PathEscape(fromStop)),
-				LastMod:    now,
-				ChangeFreq: "weekly",
-				Priority:   0.6,
-			})
-		}
-	}
-
-	// Update the writeXMLResponse call to include section and page
-	writeXMLResponse(w, urlSet.URLs, "bus-routes", page)
-}
-
-// GetTrainRoutesSitemap generates sitemap for train routes
-func GetTrainRoutesSitemap(w http.ResponseWriter, r *http.Request) {
-	page, limit := getPaginationParams(r)
-	
-	// Check cache first
-	if cached, ok := getCachedSitemap("train-routes", page); ok {
-		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-		w.Header().Set("Content-Encoding", "gzip")
-		w.Header().Set("X-Robots-Tag", "noindex")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("X-Cache", "HIT")
-		w.Write(cached)
-		return
-	}
-
-	offset := (page - 1) * limit
-
-	collection := config.MongoDB.Collection("trains")
-	ctx := r.Context()
-
-	// First get total count
-	total, err := collection.CountDocuments(ctx, bson.M{})
-	if err != nil {
-		http.Error(w, "Error counting trains: " + err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Calculate max pages
-	maxPages := (int(total) + limit - 1) / limit
-	if page > maxPages {
-		http.Error(w, "Page number exceeds maximum pages", http.StatusBadRequest)
-		return
-	}
-
-	// Optimized aggregation pipeline
-	pipeline := []bson.M{
-		{
-			"$skip": offset,
-		},
-		{
-			"$limit": limit,
-		},
-		{
-			"$project": bson.M{
-				"train_number": 1,
-				"schedule_table": 1,
-			},
-		},
-	}
-
-	cursor, err := collection.Aggregate(ctx, pipeline)
-	if err != nil {
-		http.Error(w, "Error fetching trains: " + err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer cursor.Close(ctx)
-
-	urlSet := URLSet{
-		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
-	}
-
-	now := time.Now().Format("2006-01-02")
-	
-	// Process each train
-	for cursor.Next(ctx) {
-		var train struct {
-			TrainNumber   int    `bson:"train_number"`
-			ScheduleTable []struct {
-				Station string `bson:"station"`
-			} `bson:"schedule_table"`
-		}
-		
-		if err := cursor.Decode(&train); err != nil {
-			continue
-		}
-
-		// Main train page
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc:        fmt.Sprintf("%s/train/%d", baseURL, train.TrainNumber),
-			LastMod:    now,
-			ChangeFreq: "weekly",
-			Priority:   0.8,
-		})
-
-		// Process each station in schedule
-		processedStations := make(map[string]bool)
-		for _, stop := range train.ScheduleTable {
-			station := cleanStationCode(stop.Station)
-			if station == "" || processedStations[station] {
-				continue
-			}
-			processedStations[station] = true
-
-			// Train-station specific page
-			urlSet.URLs = append(urlSet.URLs, URL{
-				Loc:        fmt.Sprintf("%s/train/%d/station/%s", baseURL, train.TrainNumber, url.PathEscape(station)),
-				LastMod:    now,
-				ChangeFreq: "weekly",
-				Priority:   0.7,
-			})
-
-			// Station info page
-			urlSet.URLs = append(urlSet.URLs, URL{
-				Loc:        fmt.Sprintf("%s/station/%s", baseURL, url.PathEscape(station)),
-				LastMod:    now,
-				ChangeFreq: "weekly",
-				Priority:   0.7,
-			})
-		}
-	}
-
-	if err = cursor.Err(); err != nil {
-		http.Error(w, "Error processing trains: " + err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Set pagination headers
-	w.Header().Set("X-Total-Pages", strconv.Itoa(maxPages))
-	w.Header().Set("X-Current-Page", strconv.Itoa(page))
-
-	// Write response with caching
-	writeXMLResponse(w, urlSet.URLs, "train-routes", page)
-}
-
-// Add helper function for pagination
 func getPaginationParams(r *http.Request) (page, limit int) {
-	pageStr := r.URL.Query().Get("page")
-	limitStr := r.URL.Query().Get("limit")
-
 	page = 1
-	if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
-		page = p
-	}
+	limit = 50000 // Maximum URLs per sitemap as per protocol
 
-	limit = maxURLsPerSitemap
-	if l, err := strconv.Atoi(limitStr); err == nil && l > 0 && l <= maxURLsPerSitemap {
-		limit = l
+	if pageStr := r.URL.Query().Get("page"); pageStr != "" {
+		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+			page = p
+		}
 	}
 
 	return page, limit
 }
 
-// writeXMLResponse modified to support caching and compression
 func writeXMLResponse(w http.ResponseWriter, urls []URL, section string, page int) {
-	// Check if sitemap exists in cache
-	if content, exists := getCachedSitemap(section, page); exists {
-		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-		w.Header().Set("Content-Encoding", "gzip")
-		w.Header().Set("X-Cache", "HIT")
-		w.Write(content)
-		return
-	}
-
-	// Generate new sitemap
-	urlSet := URLSet{
+	urlset := URLSet{
 		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
 		URLs:  urls,
 	}
 
-	output, err := xml.MarshalIndent(urlSet, "", "  ")
-	if err != nil {
-		http.Error(w, "Error generating sitemap: " + err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Add XML header
-	content := []byte(xml.Header + string(output))
-
-	// Compress the content
-	var buf bytes.Buffer
-	gz := gzip.NewWriter(&buf)
-	if _, err := gz.Write(content); err != nil {
-		http.Error(w, "Error compressing sitemap: " + err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if err := gz.Close(); err != nil {
-		http.Error(w, "Error finalizing compression: " + err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Cache the compressed sitemap
-	cacheSitemap(section, page, buf.Bytes())
-
-	// Set response headers
-	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-	w.Header().Set("Content-Encoding", "gzip")
-	w.Header().Set("X-Cache", "MISS")
-	w.Write(buf.Bytes())
-}
-
-// GetBanksSitemap generates sitemap for banks
-func GetBanksSitemap(w http.ResponseWriter, r *http.Request) {
-	page, limit := getPaginationParams(r)
-	offset := (page - 1) * limit
-
-	// Get total count first
-	var total int
-	err := config.DB.QueryRow(`
-		SELECT COUNT(DISTINCT CONCAT(bank, '/', state, '/', district, '/', branch_city, '/', ifsc)) 
-		FROM ifsc_details
-	`).Scan(&total)
-	if err != nil {
-		http.Error(w, "Error counting banks", http.StatusInternalServerError)
-		return
-	}
-
-	// Calculate max pages
-	maxPages := (total + limit - 1) / limit
-	if page > maxPages {
-		http.Error(w, "Invalid page number", http.StatusBadRequest)
-		return
-	}
-
-	// Get paginated results with optimized query
-	rows, err := config.DB.Query(`
-		WITH RECURSIVE bank_hierarchy AS (
-			SELECT DISTINCT 
-				bank,
-				state,
-				district,
-				branch_city,
-				ifsc,
-				ROW_NUMBER() OVER (
-					ORDER BY bank, state, district, branch_city, ifsc
-				) as rn
-			FROM ifsc_details
-		)
-		SELECT 
-			bank,
-			state,
-			district,
-			branch_city,
-			ifsc
-		FROM bank_hierarchy
-		WHERE rn > $1 AND rn <= $2
-	`, offset, offset+limit)
+	output, err := xml.MarshalIndent(urlset, "", "  ")
 	if err != nil {
 		http.Error(w, "Error generating sitemap", http.StatusInternalServerError)
 		return
 	}
-	defer rows.Close()
 
-	urlSet := URLSet{
-		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
-	}
+	// Cache the output
+	cacheSitemap(section, page, output)
 
-	now := time.Now().Format("2006-01-02")
-	for rows.Next() {
-		var bank, state, district, city, ifsc string
-		if err := rows.Scan(&bank, &state, &district, &city, &ifsc); err != nil {
-			continue
-		}
-
-		// Bank branch page
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/bank/%s/%s/%s/%s/%s",
-				baseURL,
-				url.PathEscape(bank),
-				url.PathEscape(state),
-				url.PathEscape(district),
-				url.PathEscape(city),
-				url.PathEscape(ifsc)),
-			LastMod:    now,
-			ChangeFreq: "monthly",
-			Priority:   0.6,
-		})
-
-		// Bank state page
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/bank/%s/%s",
-				baseURL,
-				url.PathEscape(bank),
-				url.PathEscape(state)),
-			LastMod:    now,
-			ChangeFreq: "monthly",
-			Priority:   0.7,
-		})
-
-		// Bank district page
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/bank/%s/%s/%s",
-				baseURL,
-				url.PathEscape(bank),
-				url.PathEscape(state),
-				url.PathEscape(district)),
-			LastMod:    now,
-			ChangeFreq: "monthly",
-			Priority:   0.7,
-		})
-	}
-
-	w.Header().Set("X-Total-Pages", strconv.Itoa(maxPages))
-	w.Header().Set("X-Current-Page", strconv.Itoa(page))
-	writeXMLResponse(w, urlSet.URLs, "banks", page)
+	w.Header().Set("Content-Type", "application/xml")
+	w.Write([]byte(xml.Header))
+	w.Write(output)
 }
 
-// GetCompaniesSitemap generates sitemap for company directory
-func GetCompaniesSitemap(w http.ResponseWriter, r *http.Request) {
-	page, limit := getPaginationParams(r)
-	offset := (page - 1) * limit
-
-	// Get total count first
-	collection := config.MongoDB.Collection("companies")
-	ctx := r.Context()
-	
-	total, err := collection.CountDocuments(ctx, bson.M{})
-	if err != nil {
-		http.Error(w, "Error counting companies", http.StatusInternalServerError)
-		return
-	}
-
-	// Use total to calculate max pages
-	maxPages := (int(total) / limit) + 1
-	if page > maxPages {
-		page = maxPages
-		offset = (page - 1) * limit
-	}
-
-	// Get paginated results
-	cursor, err := collection.Find(ctx, bson.M{},
-		options.Find().
-			SetSkip(int64(offset)).
-			SetLimit(int64(limit)))
-	if err != nil {
-		http.Error(w, "Error fetching companies", http.StatusInternalServerError)
-		return
-	}
-	defer cursor.Close(ctx)
-
-	urlSet := URLSet{
-		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
-	}
-
-	for cursor.Next(ctx) {
-		var company Company
-		if err := cursor.Decode(&company); err != nil {
-			continue
-		}
-
-		urlSet.URLs = append(urlSet.URLs, URL{
-			Loc: fmt.Sprintf("%s/company/%s", baseURL, url.PathEscape(company.URLTitle)),
-			ChangeFreq: "monthly",
-			Priority:   0.7,
-			LastMod:   time.Now().Format("2006-01-02"),
-		})
-	}
-
-	writeXMLResponse(w, urlSet.URLs, "companies", page)
-}
-
-// GetVillagesSitemap generates sitemap for villages with optimized streaming
 func GetVillagesSitemap(w http.ResponseWriter, r *http.Request) {
 	page, limit := getPaginationParams(r)
 	offset := (page - 1) * limit
@@ -757,7 +249,6 @@ func GetVillagesSitemap(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(gz, "</urlset>")
 }
 
-// GetMandalsSitemap generates sitemap for mandals
 func GetMandalsSitemap(w http.ResponseWriter, r *http.Request) {
 	page, limit := getPaginationParams(r)
 	offset := (page - 1) * limit
@@ -810,7 +301,6 @@ func GetMandalsSitemap(w http.ResponseWriter, r *http.Request) {
 	writeXMLResponse(w, urlSet.URLs, "mandals", page)
 }
 
-// GetPincodesSitemap generates sitemap for pincodes
 func GetPincodesSitemap(w http.ResponseWriter, r *http.Request) {
 	page, limit := getPaginationParams(r)
 	offset := (page - 1) * limit
@@ -921,7 +411,6 @@ func GetPincodesSitemap(w http.ResponseWriter, r *http.Request) {
 	writeXMLResponse(w, urlSet.URLs, "pincodes", page)
 }
 
-// GetDistancesSitemap generates sitemap for distance calculator pages
 func GetDistancesSitemap(w http.ResponseWriter, r *http.Request) {
 	page, limit := getPaginationParams(r)
 	
@@ -1048,36 +537,6 @@ func GetDistancesSitemap(w http.ResponseWriter, r *http.Request) {
 	writeXMLResponse(w, urlSet.URLs, "distances", page)
 }
 
-// Optimize count queries
-func getBusRoutesCount() int {
-	return getCachedCount("bus_routes", func() int {
-		count, _ := config.MongoDB.Collection("bus_routes").CountDocuments(context.Background(), bson.M{})
-		return int(count)
-	})
-}
-
-func getTrainRoutesCount() int {
-	return getCachedCount("trains", func() int {
-		count, _ := config.MongoDB.Collection("trains").CountDocuments(context.Background(), bson.M{})
-		return int(count)
-	})
-}
-
-func getBanksCount() int {
-	return getCachedCount("banks", func() int {
-		var count int
-		_ = config.DB.QueryRow("SELECT COUNT(*) FROM ifsc_details").Scan(&count)
-		return count
-	})
-}
-
-func getCompaniesCount() int {
-	return getCachedCount("companies", func() int {
-		count, _ := config.MongoDB.Collection("companies").CountDocuments(context.Background(), bson.M{})
-		return int(count)
-	})
-}
-
 func getVillagesCount() int {
 	return getCachedCount("villages", func() int {
 		var count int
@@ -1114,15 +573,8 @@ func getDistancesCount() int {
 	})
 }
 
-// cleanName removes special characters and trims spaces from a string
 func cleanName(s string) string {
 	s = strings.TrimSpace(s)
 	s = strings.ToLower(s)
 	return s
-}
-
-func cleanStationCode(station string) string {
-	station = strings.TrimSpace(station)
-	station = strings.ToUpper(station)
-	return station
 }

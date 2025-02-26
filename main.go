@@ -14,8 +14,6 @@ import (
     "github.com/gorilla/mux"
     "github.com/rs/cors"
     _ "github.com/lib/pq"
-    "go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/mongo/options"
     "village_site/config"
     "village_site/handlers"
 )
@@ -30,38 +28,6 @@ type HealthResponse struct {
         Tables   []string `json:"tables,omitempty"`
     } `json:"db_details"`
     Error     string `json:"error,omitempty"`
-}
-
-func initMongoDB() error {
-    // Get MongoDB URI from environment variable
-    mongoURI := os.Getenv("MONGO_URI")
-    if mongoURI == "" {
-        return fmt.Errorf("MONGO_URI environment variable not set")
-    }
-
-    // Set client options
-    clientOptions := options.Client().ApplyURI(mongoURI)
-
-    // Connect to MongoDB
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    defer cancel()
-
-    client, err := mongo.Connect(ctx, clientOptions)
-    if err != nil {
-        return fmt.Errorf("failed to connect to MongoDB: %v", err)
-    }
-
-    // Ping the database
-    err = client.Ping(ctx, nil)
-    if err != nil {
-        return fmt.Errorf("failed to ping MongoDB: %v", err)
-    }
-
-    // Store the client in config package
-    config.MongoClient = client
-    config.MongoDB = client.Database("train_database")
-
-    return nil
 }
 
 func healthCheck(w http.ResponseWriter, r *http.Request) {
@@ -164,38 +130,6 @@ func main() {
     log.Println("PostgreSQL database initialized successfully")
     defer config.CloseDB()
 
-    // Initialize MongoDB with retries
-    log.Println("Initializing MongoDB...")
-    if err := config.ConnectWithRetry(5); err != nil {
-        log.Fatalf("Failed to initialize MongoDB: %v", err)
-    }
-    log.Println("MongoDB initialized successfully")
-    defer func() {
-        if err := config.MongoClient.Disconnect(context.Background()); err != nil {
-            log.Printf("Error disconnecting from MongoDB: %v", err)
-        }
-    }()
-
-    // Initialize train system in background with memory optimization
-    log.Println("Initializing train system...")
-    trainInitChan := make(chan error, 1)
-    go func() {
-        // Force garbage collection before starting
-        runtime.GC()
-        
-        if err := handlers.InitializeTrainSystem(); err != nil {
-            log.Printf("Error initializing train system: %v", err)
-            trainInitChan <- err
-            return
-        }
-        
-        // Force garbage collection after completion
-        runtime.GC()
-        
-        log.Println("Train system initialized successfully")
-        trainInitChan <- nil
-    }()
-
     // Create router with memory-optimized settings
     r := mux.NewRouter()
     
@@ -232,11 +166,11 @@ func main() {
     srv := &http.Server{
         Handler:           r,
         Addr:             ":" + port,
-        WriteTimeout:      15 * time.Second,  // Reduced from 30
-        ReadTimeout:      15 * time.Second,  // Reduced from 30
-        IdleTimeout:      60 * time.Second,  // Reduced from 120
-        ReadHeaderTimeout: 5 * time.Second,   // Reduced from 10
-        MaxHeaderBytes:   1 << 20,           // 1MB max header size
+        WriteTimeout:      15 * time.Second,
+        ReadTimeout:      15 * time.Second,
+        IdleTimeout:      60 * time.Second,
+        ReadHeaderTimeout: 5 * time.Second,
+        MaxHeaderBytes:   1 << 20,
     }
 
     // Create error channel for server errors
@@ -256,17 +190,6 @@ func main() {
     log.Printf("Server is running at http://localhost:%s", port)
     log.Printf("Health check endpoint: http://localhost:%s/api/v1/health", port)
     log.Printf("Sitemap endpoint: http://localhost:%s/api/v1/sitemaps", port)
-
-    // Wait for train system initialization with timeout
-    select {
-    case err := <-trainInitChan:
-        if err != nil {
-            log.Printf("Warning: Train system initialization failed: %v", err)
-            log.Println("Server will continue running with limited train functionality")
-        }
-    case <-time.After(30 * time.Minute):
-        log.Println("Warning: Train system initialization timed out")
-    }
 
     // Handle graceful shutdown
     stop := make(chan os.Signal, 1)
@@ -304,32 +227,11 @@ func registerRoutes(api *mux.Router) {
     // Census routes
     api.HandleFunc("/census", handlers.GetCensusDetails).Methods("POST")
     
-    // Train routes
-    api.HandleFunc("/trains/suggest", handlers.GetTrainSuggestionsr).Methods("GET") 
-    api.HandleFunc("/trains/{train_number}", handlers.GetTrainDetails).Methods("GET")
-    api.HandleFunc("/trains/by-station", handlers.GetTrainsByStation).Methods("POST")
-    api.HandleFunc("/trains/between-stations", handlers.GetTrainsBetweenStations).Methods("POST")
-    api.HandleFunc("/trains/stations/suggest", handlers.GetStationSuggestionsr).Methods("GET")
-    
     // Mandal routes
     api.HandleFunc("/mandal", handlers.GetMandalDetails).Methods("POST")
     api.HandleFunc("/mandal/distance", handlers.GetMandalDistance).Methods("POST")
     api.HandleFunc("/mandal/districts/suggest", handlers.GetDistrictSuggestions).Methods("GET")
     api.HandleFunc("/mandal/subdistricts/suggest", handlers.GetSubdistrictSuggestions).Methods("GET")
-    
-    // Bus routes
-    api.HandleFunc("/bus/routes", handlers.GetCityRoutes).Methods("POST")
-    api.HandleFunc("/bus/route", handlers.GetBusRoute).Methods("POST")
-    api.HandleFunc("/bus/stops", handlers.GetCityStops).Methods("POST")
-    api.HandleFunc("/bus/find-route", handlers.FindBusRoute).Methods("POST")
-    api.HandleFunc("/bus/stops/suggest", handlers.GetBusStopSuggestions).Methods("GET")
-    api.HandleFunc("/bus/cities/suggest", handlers.GetCitySuggestions).Methods("GET")
-    api.HandleFunc("/bus/cities", handlers.GetAllCities).Methods("GET")
-
-    // Company routes
-    api.HandleFunc("/company", handlers.GetCompany).Methods("GET")
-    api.HandleFunc("/companies", handlers.ListCompanies).Methods("GET")
-    api.HandleFunc("/companies/search", handlers.SearchCompanies).Methods("GET")
 
     // IFSC routes
     api.HandleFunc("/bank/list", handlers.GetBankList).Methods("GET")
@@ -354,10 +256,6 @@ func registerRoutes(api *mux.Router) {
 
     // Sitemap routes
     api.HandleFunc("/sitemaps", handlers.GetSitemapIndex).Methods("GET")
-    api.HandleFunc("/sitemaps/bus-routes", handlers.GetBusRoutesSitemap).Methods("GET")
-    api.HandleFunc("/sitemaps/train-routes", handlers.GetTrainRoutesSitemap).Methods("GET")
-    api.HandleFunc("/sitemaps/banks", handlers.GetBanksSitemap).Methods("GET")
-    api.HandleFunc("/sitemaps/companies", handlers.GetCompaniesSitemap).Methods("GET")
     api.HandleFunc("/sitemaps/villages", handlers.GetVillagesSitemap).Methods("GET")
     api.HandleFunc("/sitemaps/mandals", handlers.GetMandalsSitemap).Methods("GET")
     api.HandleFunc("/sitemaps/pincodes", handlers.GetPincodesSitemap).Methods("GET")
