@@ -478,3 +478,307 @@ func GetVillageDetails(w http.ResponseWriter, r *http.Request) {
         return
     }
 }
+
+// ListVillages handles listing all villages with pagination
+func ListVillages(w http.ResponseWriter, r *http.Request) {
+    page := r.URL.Query().Get("page")
+    limit := r.URL.Query().Get("limit")
+    if page == "" {
+        page = "1"
+    }
+    if limit == "" {
+        limit = "100"
+    }
+
+    query := `
+        SELECT 
+            locality,
+            state,
+            district,
+            subdistrict,
+            COALESCE(NULLIF(trim(latitude::text), '')::float8, 0) as latitude,
+            COALESCE(NULLIF(trim(longitude::text), '')::float8, 0) as longitude
+        FROM villages
+        ORDER BY state, district, subdistrict, locality
+        LIMIT $1 OFFSET ($2 - 1) * $1`
+
+    rows, err := config.DB.Query(query, limit, page)
+    if err != nil {
+        http.Error(w, "Error fetching villages", http.StatusInternalServerError)
+        return
+    }
+    defer rows.Close()
+
+    var villages []models.Village
+    for rows.Next() {
+        var v models.Village
+        if err := rows.Scan(&v.Village, &v.State, &v.District, &v.Subdistrict, &v.Latitude, &v.Longitude); err != nil {
+            continue
+        }
+        villages = append(villages, v)
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("Cache-Control", "public, max-age=300")
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "villages": villages,
+        "page": page,
+        "limit": limit,
+    })
+}
+
+// SearchVillages handles searching villages by name or location
+func SearchVillages(w http.ResponseWriter, r *http.Request) {
+    query := r.URL.Query().Get("q")
+    if query == "" {
+        http.Error(w, "Search query is required", http.StatusBadRequest)
+        return
+    }
+
+    sqlQuery := `
+        SELECT 
+            locality,
+            state,
+            district,
+            subdistrict,
+            COALESCE(NULLIF(trim(latitude::text), '')::float8, 0) as latitude,
+            COALESCE(NULLIF(trim(longitude::text), '')::float8, 0) as longitude
+        FROM villages
+        WHERE 
+            LOWER(locality) LIKE LOWER($1) OR
+            LOWER(state) LIKE LOWER($1) OR
+            LOWER(district) LIKE LOWER($1) OR
+            LOWER(subdistrict) LIKE LOWER($1)
+        ORDER BY 
+            CASE 
+                WHEN LOWER(locality) = LOWER($2) THEN 1
+                WHEN LOWER(locality) LIKE LOWER($2) || '%' THEN 2
+                ELSE 3
+            END,
+            locality
+        LIMIT 50`
+
+    rows, err := config.DB.Query(sqlQuery, "%"+query+"%", query)
+    if err != nil {
+        http.Error(w, "Error searching villages", http.StatusInternalServerError)
+        return
+    }
+    defer rows.Close()
+
+    var villages []models.Village
+    for rows.Next() {
+        var v models.Village
+        if err := rows.Scan(&v.Village, &v.State, &v.District, &v.Subdistrict, &v.Latitude, &v.Longitude); err != nil {
+            continue
+        }
+        villages = append(villages, v)
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("Cache-Control", "public, max-age=300")
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "villages": villages,
+        "query": query,
+    })
+}
+
+// GetNearbyVillages handles finding villages near a given location
+func GetNearbyVillages(w http.ResponseWriter, r *http.Request) {
+    lat := r.URL.Query().Get("lat")
+    lon := r.URL.Query().Get("lon")
+    radius := r.URL.Query().Get("radius")
+    if lat == "" || lon == "" {
+        http.Error(w, "Latitude and longitude are required", http.StatusBadRequest)
+        return
+    }
+    if radius == "" {
+        radius = "10" // Default 10km radius
+    }
+
+    query := `
+        SELECT 
+            locality,
+            state,
+            district,
+            subdistrict,
+            COALESCE(NULLIF(trim(latitude::text), '')::float8, 0) as latitude,
+            COALESCE(NULLIF(trim(longitude::text), '')::float8, 0) as longitude,
+            ROUND(
+                (6371 * acos(
+                    cos(radians($1)) * 
+                    cos(radians(NULLIF(trim(latitude::text), '')::float8)) * 
+                    cos(radians(NULLIF(trim(longitude::text), '')::float8) - radians($2)) + 
+                    sin(radians($1)) * 
+                    sin(radians(NULLIF(trim(latitude::text), '')::float8))
+                ))::numeric, 2
+            ) as distance
+        FROM villages
+        WHERE 
+            NULLIF(trim(latitude::text), '') IS NOT NULL
+            AND NULLIF(trim(longitude::text), '') IS NOT NULL
+            AND NULLIF(trim(latitude::text), '')::float8 BETWEEN $1 - ($3::float / 111.0) AND $1 + ($3::float / 111.0)
+            AND NULLIF(trim(longitude::text), '')::float8 BETWEEN $2 - ($3::float / (111.0 * cos(radians($1)))) AND $2 + ($3::float / (111.0 * cos(radians($1))))
+        HAVING 
+            ROUND(
+                (6371 * acos(
+                    cos(radians($1)) * 
+                    cos(radians(NULLIF(trim(latitude::text), '')::float8)) * 
+                    cos(radians(NULLIF(trim(longitude::text), '')::float8) - radians($2)) + 
+                    sin(radians($1)) * 
+                    sin(radians(NULLIF(trim(latitude::text), '')::float8))
+                ))::numeric, 2
+            ) <= $3
+        ORDER BY distance
+        LIMIT 50`
+
+    rows, err := config.DB.Query(query, lat, lon, radius)
+    if err != nil {
+        http.Error(w, "Error finding nearby villages", http.StatusInternalServerError)
+        return
+    }
+    defer rows.Close()
+
+    var villages []map[string]interface{}
+    for rows.Next() {
+        var v models.Village
+        var distance float64
+        if err := rows.Scan(&v.Village, &v.State, &v.District, &v.Subdistrict, &v.Latitude, &v.Longitude, &distance); err != nil {
+            continue
+        }
+        villages = append(villages, map[string]interface{}{
+            "village": v,
+            "distance": distance,
+        })
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("Cache-Control", "public, max-age=300")
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "villages": villages,
+        "center": map[string]string{
+            "latitude": lat,
+            "longitude": lon,
+        },
+        "radius": radius,
+    })
+}
+
+// GetVillageStats handles retrieving statistics about villages
+func GetVillageStats(w http.ResponseWriter, r *http.Request) {
+    var stats struct {
+        TotalVillages   int            `json:"total_villages"`
+        StateWise      map[string]int `json:"state_wise"`
+        WithCoordinates int            `json:"with_coordinates"`
+        WithCensusData  int            `json:"with_census_data"`
+    }
+
+    // Get total villages count
+    err := config.DB.QueryRow(`SELECT COUNT(*) FROM villages`).Scan(&stats.TotalVillages)
+    if err != nil {
+        http.Error(w, "Error fetching village stats", http.StatusInternalServerError)
+        return
+    }
+
+    // Get state-wise counts
+    rows, err := config.DB.Query(`
+        SELECT state, COUNT(*) 
+        FROM villages 
+        GROUP BY state 
+        ORDER BY state`)
+    if err != nil {
+        http.Error(w, "Error fetching state-wise stats", http.StatusInternalServerError)
+        return
+    }
+    defer rows.Close()
+
+    stats.StateWise = make(map[string]int)
+    for rows.Next() {
+        var state string
+        var count int
+        if err := rows.Scan(&state, &count); err != nil {
+            continue
+        }
+        stats.StateWise[state] = count
+    }
+
+    // Get count of villages with coordinates
+    err = config.DB.QueryRow(`
+        SELECT COUNT(*) 
+        FROM villages 
+        WHERE 
+            NULLIF(trim(latitude::text), '') IS NOT NULL 
+            AND NULLIF(trim(longitude::text), '') IS NOT NULL`).Scan(&stats.WithCoordinates)
+    if err != nil {
+        stats.WithCoordinates = 0
+    }
+
+    // Get count of villages with census data
+    err = config.DB.QueryRow(`
+        SELECT COUNT(DISTINCT v.locality) 
+        FROM villages v 
+        INNER JOIN village_census vc 
+        ON LOWER(v.district) = LOWER(vc.district) 
+        AND LOWER(v.subdistrict) = LOWER(vc.subdistrict) 
+        AND LOWER(v.locality) = LOWER(vc.village)`).Scan(&stats.WithCensusData)
+    if err != nil {
+        stats.WithCensusData = 0
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("Cache-Control", "public, max-age=3600") // Cache for 1 hour
+    json.NewEncoder(w).Encode(stats)
+}
+
+// GetStates returns a list of all states and union territories
+func GetStates(w http.ResponseWriter, r *http.Request) {
+    // Set cache headers
+    w.Header().Set("Cache-Control", "public, max-age=3600") // Cache for 1 hour
+    w.Header().Set("Content-Type", "application/json")
+
+    // Get database connection
+    db := config.GetDB()
+    if db == nil {
+        log.Printf("Error: Database connection is nil")
+        http.Error(w, "Database connection error", http.StatusInternalServerError)
+        return
+    }
+
+    // Query to get distinct states
+    query := `SELECT DISTINCT state FROM villages ORDER BY state`
+    rows, err := db.Query(query)
+    if err != nil {
+        log.Printf("Error querying states: %v", err)
+        http.Error(w, "Error fetching states", http.StatusInternalServerError)
+        return
+    }
+    defer rows.Close()
+
+    var states []string
+    for rows.Next() {
+        var state string
+        if err := rows.Scan(&state); err != nil {
+            log.Printf("Error scanning state row: %v", err)
+            continue
+        }
+        if state != "" {
+            states = append(states, state)
+        }
+    }
+
+    if err = rows.Err(); err != nil {
+        log.Printf("Error iterating state rows: %v", err)
+        http.Error(w, "Error processing states", http.StatusInternalServerError)
+        return
+    }
+
+    // Return response
+    response := map[string]interface{}{
+        "states": states,
+    }
+
+    if err := json.NewEncoder(w).Encode(response); err != nil {
+        log.Printf("Error encoding states response: %v", err)
+        http.Error(w, "Error encoding response", http.StatusInternalServerError)
+        return
+    }
+}
