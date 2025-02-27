@@ -137,6 +137,10 @@ func main() {
     corsHandler := cors.New(cors.Options{
         AllowedOrigins: []string{
             "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:5173",
+            "http://localhost:8080",
+            "http://127.0.0.1:3000",
             "https://eklavyatravel.com",
             "https://www.eklavyatravel.com",
         },
@@ -144,11 +148,16 @@ func main() {
             "GET", "POST", "PUT", "DELETE", "OPTIONS",
         },
         AllowedHeaders: []string{
-            "Accept", "Content-Type", "Content-Length", 
-            "Accept-Encoding", "Authorization", "X-CSRF-Token",
+            "*",
         },
-        AllowCredentials: true,
-        MaxAge: 86400, // Cache preflight requests for 24 hours
+        ExposedHeaders: []string{
+            "Content-Length",
+            "Content-Type",
+            "X-Content-Type-Options",
+        },
+        AllowCredentials: false,
+        MaxAge: 86400,
+        Debug: true,
     })
 
     // Apply CORS middleware
@@ -218,6 +227,10 @@ func main() {
 }
 
 func registerRoutes(api *mux.Router) {
+    // Bank routes
+    api.HandleFunc("/bank/stats", handlers.GetBankStats).Methods("GET", "OPTIONS")
+    log.Printf("Registered bank stats endpoint: /api/v1/bank/stats")
+
     // Location routes
     api.HandleFunc("/locations", handlers.GetLocations).Methods("POST")
     

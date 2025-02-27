@@ -74,21 +74,36 @@ type PostOfficeResponse struct {
     PostOffices []string `json:"post_offices"`
 }
 
+type BankStats struct {
+    TotalBanks            int                `json:"total_banks"`
+    TotalBranches        int                `json:"total_branches"`
+    BanksWithWebsites    int                `json:"banks_with_websites"`
+    BranchesWithMICR     int                `json:"branches_with_micr"`
+    StateWiseCounts      map[string]int     `json:"state_wise_counts"`
+}
+
 // Get list of banks
 func GetBankList(w http.ResponseWriter, r *http.Request) {
     log.Printf("GetBankList: Starting to fetch bank list")
 
+    // Set response headers
+    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("X-Content-Type-Options", "nosniff")
+    w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+    w.Header().Set("Pragma", "no-cache")
+    w.Header().Set("Expires", "0")
+
     // Check if DB is nil
     if config.DB == nil {
         log.Printf("GetBankList: Database connection is nil")
-        http.Error(w, "Database connection not initialized", http.StatusInternalServerError)
+        http.Error(w, `{"error": "Database connection not initialized"}`, http.StatusInternalServerError)
         return
     }
 
     // Check DB connection
     if err := config.DB.Ping(); err != nil {
         log.Printf("GetBankList: Database ping failed: %v", err)
-        http.Error(w, "Database connection error", http.StatusInternalServerError)
+        http.Error(w, `{"error": "Database connection error"}`, http.StatusInternalServerError)
         return
     }
 
@@ -102,13 +117,13 @@ func GetBankList(w http.ResponseWriter, r *http.Request) {
     
     if err != nil {
         log.Printf("GetBankList: Error checking table existence: %v", err)
-        http.Error(w, "Error checking database structure", http.StatusInternalServerError)
+        http.Error(w, `{"error": "Error checking database structure"}`, http.StatusInternalServerError)
         return
     }
 
     if !tableExists {
         log.Printf("GetBankList: ifsc_details table does not exist")
-        http.Error(w, "Required table not found", http.StatusInternalServerError)
+        http.Error(w, `{"error": "Required table not found"}`, http.StatusInternalServerError)
         return
     }
     
@@ -122,7 +137,7 @@ func GetBankList(w http.ResponseWriter, r *http.Request) {
     rows, err := config.DB.Query(query)
     if err != nil {
         log.Printf("GetBankList: Database error fetching banks: %v", err)
-        http.Error(w, "Error fetching banks", http.StatusInternalServerError)
+        http.Error(w, `{"error": "Error fetching banks"}`, http.StatusInternalServerError)
         return
     }
     defer rows.Close()
@@ -135,30 +150,36 @@ func GetBankList(w http.ResponseWriter, r *http.Request) {
             continue
         }
         if bank != "" {
-            banks = append(banks, bank)
+            banks = append(banks, strings.TrimSpace(bank))
             log.Printf("GetBankList: Found bank: %s", bank)
         }
     }
 
     if err = rows.Err(); err != nil {
         log.Printf("GetBankList: Error iterating bank rows: %v", err)
-        http.Error(w, "Error processing banks", http.StatusInternalServerError)
+        http.Error(w, `{"error": "Error processing banks"}`, http.StatusInternalServerError)
         return
     }
 
     if len(banks) == 0 {
         log.Printf("GetBankList: No banks found in database")
-        http.Error(w, "No banks found", http.StatusNotFound)
+        w.WriteHeader(http.StatusOK)
+        json.NewEncoder(w).Encode(map[string]interface{}{
+            "banks": []string{},
+            "message": "No banks found",
+        })
         return
     }
 
     log.Printf("GetBankList: Found %d banks, sending response", len(banks))
-    w.Header().Set("Content-Type", "application/json")
-    if err := json.NewEncoder(w).Encode(map[string]interface{}{
+    response := map[string]interface{}{
         "banks": banks,
-    }); err != nil {
+        "total": len(banks),
+    }
+    
+    if err := json.NewEncoder(w).Encode(response); err != nil {
         log.Printf("GetBankList: Error encoding response: %v", err)
-        http.Error(w, "Error encoding response", http.StatusInternalServerError)
+        http.Error(w, `{"error": "Error encoding response"}`, http.StatusInternalServerError)
         return
     }
     log.Printf("GetBankList: Response sent successfully")
@@ -615,4 +636,131 @@ func GetPinCodeDetails(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(details)
+}
+
+// GetBankStats returns statistics about banks and branches
+func GetBankStats(w http.ResponseWriter, r *http.Request) {
+    log.Printf("GetBankStats: Starting to fetch bank statistics")
+
+    // Set response headers
+    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("X-Content-Type-Options", "nosniff")
+    w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+    w.Header().Set("Pragma", "no-cache")
+    w.Header().Set("Expires", "0")
+
+    if config.DB == nil {
+        log.Printf("GetBankStats: Database connection is nil")
+        http.Error(w, `{"error": "Database connection not initialized"}`, http.StatusInternalServerError)
+        return
+    }
+
+    // Check DB connection
+    if err := config.DB.Ping(); err != nil {
+        log.Printf("GetBankStats: Database ping failed: %v", err)
+        http.Error(w, `{"error": "Database connection error"}`, http.StatusInternalServerError)
+        return
+    }
+
+    stats := BankStats{
+        StateWiseCounts: make(map[string]int),
+    }
+
+    // Get total number of unique banks
+    err := config.DB.QueryRow(`
+        SELECT COUNT(DISTINCT bank) 
+        FROM ifsc_details 
+        WHERE bank IS NOT NULL AND bank != ''`).Scan(&stats.TotalBanks)
+    if err != nil {
+        log.Printf("GetBankStats: Error getting total banks: %v", err)
+        http.Error(w, `{"error": "Error fetching bank statistics"}`, http.StatusInternalServerError)
+        return
+    }
+
+    // Get total number of branches
+    err = config.DB.QueryRow(`
+        SELECT COUNT(*) 
+        FROM ifsc_details`).Scan(&stats.TotalBranches)
+    if err != nil {
+        log.Printf("GetBankStats: Error getting total branches: %v", err)
+        http.Error(w, `{"error": "Error fetching bank statistics"}`, http.StatusInternalServerError)
+        return
+    }
+
+    // Get number of banks with websites
+    err = config.DB.QueryRow(`
+        SELECT COUNT(*) 
+        FROM bank_details 
+        WHERE website IS NOT NULL AND website != ''`).Scan(&stats.BanksWithWebsites)
+    if err != nil {
+        log.Printf("GetBankStats: Error getting banks with websites: %v", err)
+        http.Error(w, `{"error": "Error fetching bank statistics"}`, http.StatusInternalServerError)
+        return
+    }
+
+    // Get number of branches with MICR codes
+    err = config.DB.QueryRow(`
+        SELECT COUNT(*) 
+        FROM micr_details`).Scan(&stats.BranchesWithMICR)
+    if err != nil {
+        log.Printf("GetBankStats: Error getting branches with MICR: %v", err)
+        http.Error(w, `{"error": "Error fetching bank statistics"}`, http.StatusInternalServerError)
+        return
+    }
+
+    // Get state-wise branch counts with normalized state names
+    rows, err := config.DB.Query(`
+        SELECT UPPER(TRIM(state)) as state, COUNT(*) as count 
+        FROM ifsc_details 
+        WHERE state IS NOT NULL AND TRIM(state) != '' 
+        GROUP BY UPPER(TRIM(state)) 
+        ORDER BY count DESC`)
+    if err != nil {
+        log.Printf("GetBankStats: Error getting state-wise counts: %v", err)
+        http.Error(w, `{"error": "Error fetching bank statistics"}`, http.StatusInternalServerError)
+        return
+    }
+    defer rows.Close()
+
+    // Map for state name normalization
+    stateNormalization := map[string]string{
+        "UTTARANCHAL":     "UTTARAKHAND",
+        "UttaraKhand":     "UTTARAKHAND",
+        "Uttarakhand":     "UTTARAKHAND",
+        "Gujarat":         "GUJARAT",
+        "Madhya Pradesh":  "MADHYA PRADESH",
+        "Tamil Nadu":      "TAMIL NADU",
+        "Telangana":       "TELANGANA",
+        "Tripura":         "TRIPURA",
+    }
+
+    for rows.Next() {
+        var state string
+        var count int
+        if err := rows.Scan(&state, &count); err != nil {
+            log.Printf("GetBankStats: Error scanning state count: %v", err)
+            continue
+        }
+
+        // Normalize state name if a mapping exists
+        if normalizedState, exists := stateNormalization[state]; exists {
+            state = normalizedState
+        }
+
+        // Add count to existing state or create new entry
+        stats.StateWiseCounts[state] += count
+    }
+
+    if err = rows.Err(); err != nil {
+        log.Printf("GetBankStats: Error iterating state counts: %v", err)
+        http.Error(w, `{"error": "Error processing bank statistics"}`, http.StatusInternalServerError)
+        return
+    }
+
+    log.Printf("GetBankStats: Successfully fetched statistics")
+    if err := json.NewEncoder(w).Encode(stats); err != nil {
+        log.Printf("GetBankStats: Error encoding response: %v", err)
+        http.Error(w, `{"error": "Error encoding response"}`, http.StatusInternalServerError)
+        return
+    }
 }
