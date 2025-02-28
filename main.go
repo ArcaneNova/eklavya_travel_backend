@@ -16,6 +16,7 @@ import (
     _ "github.com/lib/pq"
     "village_site/config"
     "village_site/handlers"
+    "village_site/middleware"
 )
 
 type HealthResponse struct {
@@ -123,17 +124,27 @@ func main() {
             "http://localhost:8080",
             "http://127.0.0.1:3000",
             "https://eklavyatravel.com",
-            "https://www.eklavyatravel.com",
-            "https://villagedirectory.in",
-            "https://www.villagedirectory.in",
             "http://eklavyatravel.com",
+            "https://www.eklavyatravel.com",
             "http://www.eklavyatravel.com",
+            "https://villagedirectory.in",
+            "http://villagedirectory.in",
+            "https://www.villagedirectory.in",
+            "http://www.villagedirectory.in",
+            "https://eklavya-travel-backend.onrender.com",
         },
         AllowedMethods: []string{
             "GET", "POST", "PUT", "DELETE", "OPTIONS",
         },
         AllowedHeaders: []string{
-            "*",
+            "Accept",
+            "Authorization",
+            "Content-Type",
+            "X-CSRF-Token",
+            "X-Requested-With",
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers",
         },
         ExposedHeaders: []string{
             "Content-Length",
@@ -145,8 +156,12 @@ func main() {
         Debug: true,
     })
 
-    // Apply CORS middleware
+    // Apply middlewares in correct order
+    r.Use(middleware.CORSDebugMiddleware)
     r.Use(corsHandler.Handler)
+    r.Use(middleware.RecoveryMiddleware)
+    r.Use(middleware.LoggingMiddleware)
+    r.Use(middleware.CompressHandler)
 
     // API routes
     api := r.PathPrefix("/api/v1").Subrouter()
