@@ -260,10 +260,12 @@ func registerRoutes(api *mux.Router) {
     api.HandleFunc("/bank/debug-ifsc", handlers.DebugIFSCData).Methods("GET")
 
     // PIN code routes
-    api.HandleFunc("/pincode/states", handlers.GetPinStates).Methods("GET")
-    api.HandleFunc("/pincode/districts", handlers.GetPinDistricts).Methods("GET")
-    api.HandleFunc("/pincode/offices", handlers.GetPostOffices).Methods("GET")
-    api.HandleFunc("/pincode/details", handlers.GetPinCodeDetails).Methods("GET")
+    api.HandleFunc("/pincode/states", handlers.GetPinStates).Methods("GET", "OPTIONS")
+    api.HandleFunc("/pincode/districts", handlers.GetPinDistricts).Methods("GET", "OPTIONS")
+    api.HandleFunc("/pincode/offices", handlers.GetPostOffices).Methods("GET", "OPTIONS")
+    api.HandleFunc("/pincode/details", handlers.GetPinCodeDetails).Methods("GET", "OPTIONS")
+    api.HandleFunc("/pincode/stats", handlers.GetPinCodeStats).Methods("GET", "OPTIONS")
+    log.Printf("Registered PIN code endpoints: /api/v1/pincode/*")
 
     // Health check
     api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
