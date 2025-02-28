@@ -112,9 +112,6 @@ func main() {
     log.Println("PostgreSQL database initialized successfully")
     defer config.CloseDB()
 
-    // Create router with memory-optimized settings
-    r := mux.NewRouter()
-    
     // CORS configuration
     corsHandler := cors.New(cors.Options{
         AllowedOrigins: []string{
@@ -154,26 +151,33 @@ func main() {
         AllowCredentials: false,
         MaxAge: 86400,
         Debug: true,
+        OptionsPassthrough: false,
+        OptionsSuccessStatus: http.StatusOK,
     })
 
-    // Apply middlewares in correct order
-    r.Use(middleware.CORSDebugMiddleware)
-    r.Use(corsHandler.Handler)
-    r.Use(middleware.RecoveryMiddleware)
-    r.Use(middleware.LoggingMiddleware)
-    r.Use(middleware.CompressHandler)
-
-    // API routes
+    // Create base router and API subrouter
+    r := mux.NewRouter()
     api := r.PathPrefix("/api/v1").Subrouter()
+
+    // Apply CORS middleware first, before any other middleware
+    handler := corsHandler.Handler(api)
+    
+    // Apply other middlewares
+    handler = middleware.CORSDebugMiddleware(handler)
+    handler = middleware.RecoveryMiddleware(handler)
+    handler = middleware.LoggingMiddleware(handler)
+    handler = middleware.CompressHandler(handler)
+
+    // Register routes
     registerRoutes(api)
     log.Println("Routes registered successfully")
 
     // Health check endpoint
-    api.HandleFunc("/health/detailed", healthCheck).Methods("GET")
+    api.HandleFunc("/health/detailed", healthCheck).Methods("GET", "OPTIONS")
 
     // Create server with optimized timeouts
     srv := &http.Server{
-        Handler:           r,
+        Handler:           handler,
         Addr:             ":" + port,
         WriteTimeout:      15 * time.Second,
         ReadTimeout:      15 * time.Second,

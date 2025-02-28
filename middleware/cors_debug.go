@@ -12,20 +12,24 @@ func CORSDebugMiddleware(next http.Handler) http.Handler {
         log.Printf("[CORS Debug] Request Method: %s", r.Method)
         log.Printf("[CORS Debug] Request Headers: %v", r.Header)
 
-        // For preflight requests
-        if r.Method == "OPTIONS" {
-            log.Printf("[CORS Debug] Handling preflight request")
-            w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
-            w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-            w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, Origin")
-            w.WriteHeader(http.StatusOK)
-            return
-        }
+        // Wrap response writer to capture headers
+        wrappedWriter := &responseWriterWrapper{ResponseWriter: w}
 
         // Call the next handler
-        next.ServeHTTP(w, r)
+        next.ServeHTTP(wrappedWriter, r)
 
-        // Log response headers
-        log.Printf("[CORS Debug] Response Headers: %v", w.Header())
+        // Log response details
+        log.Printf("[CORS Debug] Response Status: %d", wrappedWriter.status)
+        log.Printf("[CORS Debug] Response Headers: %v", wrappedWriter.Header())
     })
+}
+
+type responseWriterWrapper struct {
+    http.ResponseWriter
+    status int
+}
+
+func (w *responseWriterWrapper) WriteHeader(status int) {
+    w.status = status
+    w.ResponseWriter.WriteHeader(status)
 } 
